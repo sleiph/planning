@@ -23,4 +23,3 @@ $ npm run generate
 
 - Conseguir usar o Docker...
 - O resto do projeto
-

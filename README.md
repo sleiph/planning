@@ -1,25 +1,35 @@
-# planning
+# Nuxt 3 Minimal Starter
 
-Site de planning poker com Nuxt, Tailwind e Typescript, pra poder fazer um planning sem ter que ficar vendo propaganda de Bet em sites suspeitos.
+Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
-## Build Setup
+## Setup
+
+Make sure to install the dependencies:
 
 ```bash
-# install dependencies
-$ npm install
-
-# serve with hot reload at localhost:3000
-$ npm run dev
-
-# build for production and launch server
-$ npm run build
-$ npm run start
-
-# generate static project
-$ npm run generate
+npm install
 ```
 
-## Fazer
+## Development Server
 
-- Conseguir usar o Docker...
-- O resto do projeto
+Start the development server on `http://localhost:3000`:
+
+```bash
+npm run dev -- -o
+```
+
+## Production
+
+Build the application for production:
+
+```bash
+npm run build
+```
+
+Locally preview production build:
+
+```bash
+npm run preview
+```
+
+Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.

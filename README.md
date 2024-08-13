@@ -1,35 +1,20 @@
-# Nuxt 3 Minimal Starter
+# Planning
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Site pra fazer o planning poker sem precisar ficar vendo publicidades suspeitas em sites quebrados.
 
-## Setup
+Vue/Nuxt3 -> Pinia -> Typescript -> Tailwind.
 
-Make sure to install the dependencies:
+### Comandos
 
 ```bash
+# Setup
 npm install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
+# Desenvolvimento
 npm run dev -- -o
-```
-
-## Production
-
-Build the application for production:
-
-```bash
+# Production
 npm run build
-```
-
-Locally preview production build:
-
-```bash
+# Preview
 npm run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+[deployment documentação de deploy](https://nuxt.com/docs/getting-started/deployment)

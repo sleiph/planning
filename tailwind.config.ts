@@ -25,6 +25,7 @@ export default <Partial<Config>>{
         fontFamily: {
             sans: ['Graphik', 'sans-serif'],
             serif: ['Merriweather', 'serif'],
+            mono: ['Inconsolata', 'SFMono-Regular'],
         },
         extend: {
             spacing: {

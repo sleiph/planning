@@ -1,6 +1,4 @@
-interface ISalasState {
-  salas: string[]
-}
+import type { ISalasState, Sala } from './../types';
 
 export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('websiteStore', {
   state: () => ({
@@ -10,7 +8,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
     async fetch() : Promise<void> {
       this.salas = [];
     },
-    async addSala(sala:string) {
+    async addSala(sala : Sala) {
       this.salas.push(sala);
     },
     async removerSala(indice:number) {

@@ -18,3 +18,9 @@ npm run preview
 ```
 
 [deployment documentação de deploy](https://nuxt.com/docs/getting-started/deployment)
+
+### Fazer
+
+- usar typescript em tudo
+- mudar as cores pra ter dois temas
+- mudar os tamanhos em telas menores

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="h-dvh grid grid-cols-12 gap-4 justify-items-center content-center bg-cinza-escuro text-branco">
     <NuxtRouteAnnouncer />
     <NuxtPage />
   </div>

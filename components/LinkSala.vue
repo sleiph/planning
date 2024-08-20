@@ -12,7 +12,7 @@
 
 <template>
     <div class="pt-4 font-mono">
-        <NuxtLink :to="{ name: 'salas-hash', params: { hash: sala } }">
+        <NuxtLink :to="{ name: 'salas-hash', params: { hash: sala.nome } }">
             {{ endereco + "/" + sala.nome }}
         </NuxtLink>
         <button @click="removerSala(store.salas.indexOf(sala))" class="pl-4 text-lg text-rosa align-top">

@@ -24,3 +24,4 @@ npm run preview
 - usar typescript em tudo
 - mudar as cores pra ter dois temas
 - mudar os tamanhos em telas menores
+- verificar se já tem um usuário com o nome escolhido na entrada

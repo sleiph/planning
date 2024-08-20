@@ -1,6 +1,6 @@
 export interface Usuario {
     nome: string,
-    nota: number
+    carta: number
 }
 
 export interface Sala {

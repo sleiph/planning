@@ -1,7 +1,5 @@
 <script setup lang="ts">
     const props = defineProps(['nome', 'checada']);
-
-    //
 </script>
 
 <template>

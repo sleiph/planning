@@ -9,5 +9,7 @@ export interface Sala {
 }
 
 export interface ISalasState {
-    salas: Sala[]
+    salas: Sala[],
+    carregando: boolean,
+    erro: string | null
 }

@@ -2,11 +2,13 @@
     // usar typescript
 
     const store = useWebsiteStore();
-    await useAsyncData('salas', () => store.fetch());
+    await useAsyncData('salas', () => store.getSalas());
+
+    console.log(store.salas);
 
     function gerarHash() {
         let nomeSala = (+new Date).toString(36);
-        store.addSala({nome:nomeSala});
+        store.addSala({hash:nomeSala});
     }
 </script>
 

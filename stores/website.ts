@@ -8,8 +8,28 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
   }),
   actions: {
     async addSala(sala : Sala) {
-      this.salas.push(sala);
+      this.carregando = true;
+      this.erro = null;
+      try {
+        const response = await fetch('http://localhost:3050/addsala', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ sala }),
+        });
+        if (!response.ok) {
+          throw new Error('Failed to post user');
+        }
+        let resposta = await response.json();
+        this.salas.push(sala);
+      } catch (err: any) {
+        this.erro = err.message || 'Erro inesperado no addSala';
+      } finally {
+        this.carregando = false;
+      }
     },
+
     async removerSala(indice:number) {
       if (indice > -1) {
         this.salas.splice(indice, 1);

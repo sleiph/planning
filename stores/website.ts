@@ -80,11 +80,47 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       }
     },
 
-    async addUsuario(hash: string, usuario:Usuario) {
+    async addUsuario(hash: string, usuario:Usuario): Promise<Usuario | null> {
+
+      if (!usuario.nome)
+        return null;
+
       let sala : Sala | undefined = this.salas.find(s => s.hash === hash);
 
-      if (!sala?.usuarios.includes(usuario))
-        sala?.usuarios.push(usuario);
+      if (!sala) {
+        throw createError({
+          statusCode: 404,
+          statusMessage: 'Sala não encontrada'
+        })
+      }
+
+      let usrSala : Usuario | undefined;
+      if (!sala.usuarios)
+        sala.usuarios = [];
+      else
+        usrSala = sala.usuarios.find(u => u.nome === usuario.nome);
+
+      if (usrSala)
+        return usrSala;
+
+      sala.usuarios.push(usuario);
+      return usuario;
+    },
+
+    async removerUsuario(hash: string, usuario:Usuario) {
+      let sala : Sala | undefined = this.salas.find(s => s.hash === hash);
+
+      if (!sala)
+        return false;
+
+      let usrSala : Usuario | undefined = sala.usuarios.find(u => u.nome === usuario.nome);
+
+      if (!usrSala)
+        return false;
+
+      let indice = sala.usuarios.indexOf(usrSala);
+      sala.usuarios.splice(indice, 1);
+      return true;
     }
   }
 })

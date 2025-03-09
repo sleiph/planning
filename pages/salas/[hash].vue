@@ -1,31 +1,44 @@
-<script setup>
-    // usar typescript
+<script setup lang="ts">
 
     import { useRoute } from 'vue-router';
+    import type { Usuario } from '../../types';
+
     const route = useRoute();
-    let salaPrm = route.params;
+    const salaPrm: string = route.params.hash as string;
 
     const store = useWebsiteStore();
-    await useAsyncData('salas', () => store.fetch());
+    await useAsyncData('salas', () => store.getSalas());
 
-    let sala = store.salas.find(s => s.hash == sala.hash);
+    let sala = store.salas.find(s => s.hash == salaPrm);
 
-    const usuario = useCookie('usuario');
+    const usrCookie = useCookie('usuario');
     const nome = ref('');
 
-    const entrar = () => {
-        let usr = { nome: nome.value };
-        usuario.value = usr;
-        store.addUsuario(salaPrm.hash, usr);
+    const entrar = async (): Promise<Usuario | null> => {
+        let usr: Usuario = { nome: nome.value, nota: 1, sala: salaPrm };
+        try {
+            let resposta = await store.addUsuario(salaPrm, usr);
+            if (resposta?.nome) {
+                usrCookie.value = resposta.nome;
+                return resposta;
+            }
+        } catch (err) {
+            console.error(err)
+        }
+        return null;
     }
     const sair = () => {
-        usuario.value = null;
+        let usr: Usuario = { nome: nome.value, nota: 0, sala: salaPrm };
+        store.removerUsuario(salaPrm, usr)
+        usrCookie.value = null;
     }
+
+    const usuario = entrar();
 
 </script>
 
 <template>
-    <template v-if="usuario">
+    <template v-if="usrCookie">
         <div class="w-full col-span-10 col-start-2 py-4 px-8 text-center bg-cinza border-cinza-claro rounded-lg shadow">
             <Usuario v-for="usr in sala?.usuarios" :usuario="usr" />
         </div>

@@ -12,12 +12,16 @@
     let sala = store.salas.find(s => s.hash == salaPrm);
 
     const usrCookie = useCookie('usuario');
-    const nome = ref('');
+    const usuario = ref<Usuario | null>(null);
+    const nome = ref<string>('');
 
     const entrar = async (): Promise<Usuario | null> => {
-        let usr: Usuario = { nome: nome.value, nota: 1, sala: salaPrm };
+        if (!usuario.value) {
+            let nomeTmp = (usrCookie.value) ? usrCookie.value as string : nome.value;
+            usuario.value = { nome: nomeTmp, nota: 1, sala: salaPrm };
+        }
         try {
-            let resposta = await store.addUsuario(salaPrm, usr);
+            let resposta = await store.addUsuario(usuario.value);
             if (resposta?.nome) {
                 usrCookie.value = resposta.nome;
                 return resposta;
@@ -28,12 +32,15 @@
         return null;
     }
     const sair = () => {
-        let usr: Usuario = { nome: nome.value, nota: 0, sala: salaPrm };
-        store.removerUsuario(salaPrm, usr)
+        if (usuario.value) {
+            store.removerUsuario(salaPrm, usuario.value)
+            usuario.value = null;
+        }
         usrCookie.value = null;
+        nome.value = '';
     }
 
-    const usuario = entrar();
+    usuario.value = await entrar();
 
 </script>
 
@@ -67,7 +74,9 @@
         <div class="col-span-10 col-start-2 inline-flex">
             <input v-model="nome" class="w-100 h-9 m-3 p-3 text-cinza-escuro" placeholder="Escreva seu nome..." @keypress.enter="entrar()" />
             <div class="m-3">
-                <button :disabled="!nome" @click="entrar" class="text-cinza bg-cinza-claro hover:bg-rosa focus:outline-none focus:ring-4 focus:ring-cinza-claro font-medium rounded-lg text-sm px-5 py-2 dark:bg-branco dark:hover:bg-rosa dark:focus:ring-cinza-claro dark:border-cinza">Entrar</button>
+                <button :disabled="!nome" @click="entrar" class="text-cinza bg-cinza-claro hover:bg-rosa focus:outline-none focus:ring-4 focus:ring-cinza-claro font-medium rounded-lg text-sm px-5 py-2 dark:bg-branco dark:hover:bg-rosa dark:focus:ring-cinza-claro dark:border-cinza">
+                    Entrar
+                </button>
             </div>
         </div>
     </template>

@@ -38,9 +38,9 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
           body: JSON.stringify({ sala }),
         });
         if (!response.ok) {
-          throw new Error('Failed to post user');
+          throw new Error('Falha ao adicionar sala');
         }
-        let resposta = await response.json();
+        await response.json();
         this.salas.push(sala);
       } catch (err: any) {
         this.erro = err.message || 'Erro inesperado no addSala';
@@ -67,9 +67,9 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
           body: JSON.stringify({ sala }),
         });
         if (!response.ok) {
-          throw new Error('Failed to post user');
+          throw new Error('Falha ao remover sala');
         }
-        let resposta = await response.json();
+        await response.json();
 
         let indice = this.salas.indexOf(salaArr);
         this.salas.splice(indice, 1);
@@ -80,12 +80,12 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       }
     },
 
-    async addUsuario(hash: string, usuario:Usuario): Promise<Usuario | null> {
+    async addUsuario(usuario:Usuario): Promise<Usuario | null> {
 
       if (!usuario.nome)
         return null;
 
-      let sala : Sala | undefined = this.salas.find(s => s.hash === hash);
+      let sala : Sala | undefined = this.salas.find(s => s.hash === usuario.sala);
 
       if (!sala) {
         throw createError({
@@ -94,17 +94,36 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
         })
       }
 
-      let usrSala : Usuario | undefined;
       if (!sala.usuarios)
         sala.usuarios = [];
-      else
-        usrSala = sala.usuarios.find(u => u.nome === usuario.nome);
-
+      
+      let usrSala : Usuario | undefined = sala.usuarios.find(u => u.nome === usuario.nome);
       if (usrSala)
         return usrSala;
 
-      sala.usuarios.push(usuario);
-      return usuario;
+      this.carregando = true;
+      this.erro = null;
+      try {
+        const response = await fetch('http://localhost:3050/addusuario', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ usuario }),
+        });
+        if (!response.ok) {
+          throw new Error('Failed to post user');
+        }
+        await response.json();
+
+        sala.usuarios.push(usuario);
+        return usuario;
+      } catch (err: any) {
+        this.erro = err.message || 'Erro inesperado no addUsuario';
+        throw new Error(err);
+      } finally {
+        this.carregando = false;
+      }
     },
 
     async removerUsuario(hash: string, usuario:Usuario) {

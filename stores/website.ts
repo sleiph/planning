@@ -80,9 +80,8 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       }
     },
 
-    async addUsuario(usuario:Usuario): Promise<Usuario | null> {
-
-      if (!usuario.nome)
+    getUsuario(usuario: Usuario): Usuario | null {
+      if (!usuario.nome || !usuario.sala)
         return null;
 
       let sala : Sala | undefined = this.salas.find(s => s.hash === usuario.sala);
@@ -98,11 +97,29 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
         sala.usuarios = [];
       
       let usrSala : Usuario | undefined = sala.usuarios.find(u => u.nome === usuario.nome);
-      if (usrSala)
-        return usrSala;
+      if (!usrSala)
+        return null;
+      return usrSala;
+    },
+
+    async addUsuario(usuario:Usuario): Promise<Usuario | null> {
+
+      if (!usuario.nome || !usuario.sala)
+        return null;
+
+      let sala : Sala | undefined = this.salas.find(s => s.hash === usuario.sala);
+
+      if (!sala) {
+        throw createError({
+          statusCode: 404,
+          statusMessage: 'Sala não encontrada'
+        })
+      }
+
+      if (!sala.usuarios)
+        sala.usuarios = [];
 
       this.carregando = true;
-      this.erro = null;
       try {
         const response = await fetch('http://localhost:3050/addusuario', {
           method: 'POST',
@@ -115,19 +132,16 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
           throw new Error('Failed to post user');
         }
         await response.json();
-
-        sala.usuarios.push(usuario);
-        return usuario;
-      } catch (err: any) {
-        this.erro = err.message || 'Erro inesperado no addUsuario';
-        throw new Error(err);
       } finally {
+        sala.usuarios.push(usuario);
         this.carregando = false;
+        
+        return usuario;
       }
     },
 
-    async removerUsuario(hash: string, usuario:Usuario) {
-      let sala : Sala | undefined = this.salas.find(s => s.hash === hash);
+    async removerUsuario(usuario:Usuario) {
+      let sala : Sala | undefined = this.salas.find(s => s.hash === usuario.sala);
 
       if (!sala)
         return false;

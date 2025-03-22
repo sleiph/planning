@@ -80,6 +80,42 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       }
     },
 
+    async getUsuarios(salaHsh: Sala) {
+      if (!salaHsh || !salaHsh.hash)
+        return [];
+
+      let sala : Sala | undefined = this.salas.find(s => s.hash === salaHsh.hash);
+
+      if (!sala) {
+        throw createError({
+          statusCode: 404,
+          statusMessage: 'Sala não encontrada'
+        })
+      }
+
+      this.carregando = true;
+      this.erro = null;
+      try {
+        const response = await fetch('http://localhost:3050/getusuarios', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ sala }),
+        });
+        if (!response.ok) {
+          throw new Error('Erro buscando as salas');
+        }
+        sala.usuarios = await response.json();
+        return sala.usuarios;
+      } catch (err: any) {
+        this.erro = err.message || 'Um erro insperado deveria ter sido esperado';
+        return [];
+      } finally {
+        this.carregando = false;
+      }
+    },
+
     getUsuario(usuario: Usuario): Usuario | null {
       if (!usuario.nome || !usuario.sala)
         return null;
@@ -135,7 +171,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       } finally {
         sala.usuarios.push(usuario);
         this.carregando = false;
-        
+
         return usuario;
       }
     },
@@ -151,9 +187,28 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       if (!usrSala)
         return false;
 
-      let indice = sala.usuarios.indexOf(usrSala);
-      sala.usuarios.splice(indice, 1);
-      return true;
+      this.carregando = true;
+      this.erro = null;
+      try {
+        const response = await fetch('http://localhost:3050/removeusuario', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ usuario }),
+        });
+        if (!response.ok) {
+          throw new Error('Erro deletando usuario');
+        }
+        await response.json();
+      } catch (err: any) {
+        this.erro = err.message || 'Erro inesperado no removerUsuario';
+      } finally {
+        let indice = sala.usuarios.indexOf(usrSala);
+        sala.usuarios.splice(indice, 1);
+
+        return true;
+      }
     }
   }
 })

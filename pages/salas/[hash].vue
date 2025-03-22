@@ -8,8 +8,9 @@
 
     const store = useWebsiteStore();
     await useAsyncData('salas', () => store.getSalas());
+    const sala = store.salas.find(s => s.hash == salaPrm);
 
-    let sala = store.salas.find(s => s.hash == salaPrm);
+    await useAsyncData('usuarios', () => store.getUsuarios(sala));
 
     const usrCookie = useCookie('usuario');
     const usuario = ref<Usuario | null>(null);

@@ -41,6 +41,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
           throw new Error('Falha ao adicionar sala');
         }
         await response.json();
+        sala.usuarios = [];
         this.salas.push(sala);
       } catch (err: any) {
         this.erro = err.message || 'Erro inesperado no addSala';
@@ -87,10 +88,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       let sala : Sala | undefined = this.salas.find(s => s.hash === salaHsh.hash);
 
       if (!sala) {
-        throw createError({
-          statusCode: 404,
-          statusMessage: 'Sala não encontrada'
-        })
+        throw new Error('Sala não encontrada');
       }
 
       this.carregando = true;
@@ -107,10 +105,8 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
           throw new Error('Erro buscando as salas');
         }
         sala.usuarios = await response.json();
-        return sala.usuarios;
       } catch (err: any) {
         this.erro = err.message || 'Um erro insperado deveria ter sido esperado';
-        return [];
       } finally {
         this.carregando = false;
       }
@@ -123,14 +119,11 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       let sala : Sala | undefined = this.salas.find(s => s.hash === usuario.sala);
 
       if (!sala) {
-        throw createError({
-          statusCode: 404,
-          statusMessage: 'Sala não encontrada'
-        })
+        throw new Error('Sala não encontrada');
       }
 
       if (!sala.usuarios)
-        sala.usuarios = [];
+        return null;
       
       let usrSala : Usuario | undefined = sala.usuarios.find(u => u.nome === usuario.nome);
       if (!usrSala)
@@ -146,14 +139,8 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       let sala : Sala | undefined = this.salas.find(s => s.hash === usuario.sala);
 
       if (!sala) {
-        throw createError({
-          statusCode: 404,
-          statusMessage: 'Sala não encontrada'
-        })
+        throw new Error('Sala não encontrada');
       }
-
-      if (!sala.usuarios)
-        sala.usuarios = [];
 
       this.carregando = true;
       try {
@@ -164,14 +151,12 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
           },
           body: JSON.stringify({ usuario }),
         });
-        if (!response.ok) {
+        /*if (!response.ok) {
           throw new Error('Failed to post user');
-        }
+        }*/
         await response.json();
       } finally {
-        sala.usuarios.push(usuario);
         this.carregando = false;
-
         return usuario;
       }
     },
@@ -180,6 +165,9 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       let sala : Sala | undefined = this.salas.find(s => s.hash === usuario.sala);
 
       if (!sala)
+        return false;
+
+      if (!sala.usuarios)
         return false;
 
       let usrSala : Usuario | undefined = sala.usuarios.find(u => u.nome === usuario.nome);
@@ -204,9 +192,6 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       } catch (err: any) {
         this.erro = err.message || 'Erro inesperado no removerUsuario';
       } finally {
-        let indice = sala.usuarios.indexOf(usrSala);
-        sala.usuarios.splice(indice, 1);
-
         return true;
       }
     }

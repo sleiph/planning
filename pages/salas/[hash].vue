@@ -10,8 +10,6 @@
     await useAsyncData('salas', () => store.getSalas());
     const sala = store.salas.find(s => s.hash == salaPrm);
 
-    await useAsyncData('usuarios', () => store.getUsuarios(sala));
-
     const usrCookie = useCookie('usuario');
     const usuario = ref<Usuario | null>(null);
     const nome = ref<string>('');
@@ -31,6 +29,7 @@
                 usrCookie.value = resposta.nome;
             }
             usuario.value = resposta;
+            fetchUsuarios();
         } catch (err) {
             console.error(err)
         }
@@ -43,25 +42,42 @@
         nome.value = '';
     }
 
-    getUsuario();
+    function fetchUsuarios() {
+        useAsyncData('usuarios', () => store.getUsuarios(sala));
+    }
+
+    onMounted(() => {
+        const interval = setInterval(() => {
+            fetchUsuarios();
+        }, 20 * 1000);
+
+        onBeforeUnmount(() => {
+            clearInterval(interval);
+        });
+    });
+
+    onNuxtReady(() => {
+        fetchUsuarios();
+        getUsuario();
+    });
 
 </script>
 
 <template>
     <template v-if="usrCookie">
-        <div class="w-full col-span-10 col-start-2 py-4 px-8 text-center bg-cinza border-cinza-claro rounded-lg shadow">
+        <div class="w-full col-span-10 col-start-2 py-4 px-8 text-center bg-cinza border-cinza-claro rounded-lg">
             <Usuario v-for="usr in sala?.usuarios" :usuario="usr" />
         </div>
 
-        <ul class="w-full grid grid-cols-7 gap-4 col-span-10 col-start-2 py-4 px-8 text-center bg-cinza border-cinza-claro rounded-lg shadow">
+        <ul class="w-full grid grid-cols-7 col-span-10 col-start-2 py-4 px-8 text-center bg-cinza border-cinza-claro rounded-lg shadow">
             <li></li>
-            <Carta nome="1" />
-            <Carta nome="2" />
-            <Carta nome="3" />
-            <Carta nome="5" />
-            <Carta nome="?" checada="true" />
+            <Carta nome="1" class="px-2"/>
+            <Carta nome="2" class="px-2"/>
+            <Carta nome="3" class="px-2"/>
+            <Carta nome="5" class="px-2"/>
+            <Carta nome="?" checada="true" class="px-2"/>
             <li></li>
-            <li class="col-span-10">
+            <li class="col-span-10 pt-4">
                 <button class="text-cinza bg-cinza-claro hover:bg-rosa focus:outline-none focus:ring-4 focus:ring-cinza-claro font-medium rounded-lg text-sm px-5 py-2 dark:bg-branco dark:hover:bg-rosa dark:focus:ring-cinza-claro dark:border-cinza">
                     Enviar
                 </button>

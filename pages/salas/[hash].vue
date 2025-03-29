@@ -42,6 +42,11 @@
         nome.value = '';
     }
 
+    const mudaNota = (nota: number) => {
+        let usrTmp: Usuario = { nome: usrCookie.value as string, nota: nota, sala: salaPrm };
+        store.updateNota(usrTmp);
+    }
+
     function fetchUsuarios() {
         useAsyncData('usuarios', () => store.getUsuarios(sala));
     }
@@ -71,17 +76,12 @@
 
         <ul class="w-full grid grid-cols-7 col-span-10 col-start-2 py-4 px-8 text-center bg-cinza border-cinza-claro rounded-lg shadow">
             <li></li>
-            <Carta nome="1" class="px-2"/>
-            <Carta nome="2" class="px-2"/>
-            <Carta nome="3" class="px-2"/>
-            <Carta nome="5" class="px-2"/>
-            <Carta nome="?" checada="true" class="px-2"/>
+            <Carta nome="1" class="px-2" @click="mudaNota(1)"/>
+            <Carta nome="2" class="px-2" @click="mudaNota(2)"/>
+            <Carta nome="3" class="px-2" @click="mudaNota(3)"/>
+            <Carta nome="5" class="px-2" @click="mudaNota(5)"/>
+            <Carta nome="?" checada="true" class="px-2" @click="mudaNota(0)"/>
             <li></li>
-            <li class="col-span-10 pt-4">
-                <button class="text-cinza bg-cinza-claro hover:bg-rosa focus:outline-none focus:ring-4 focus:ring-cinza-claro font-medium rounded-lg text-sm px-5 py-2 dark:bg-branco dark:hover:bg-rosa dark:focus:ring-cinza-claro dark:border-cinza">
-                    Enviar
-                </button>
-            </li>
         </ul>
 
         <button @click="sair" class="col-start-10 row-start-3 justify-self-end">

@@ -192,7 +192,43 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       } catch (err: any) {
         this.erro = err.message || 'Erro inesperado no removerUsuario';
       } finally {
+        this.carregando = false;
         return true;
+      }
+    },
+
+    async updateNota(usuario: Usuario) {
+      let sala : Sala | undefined = this.salas.find(s => s.hash === usuario.sala);
+
+      if (!sala)
+        return false;
+
+      if (!sala.usuarios)
+        return false;
+
+      let usrSala : Usuario | undefined = sala.usuarios.find(u => u.nome === usuario.nome);
+
+      if (!usrSala)
+        return false;
+
+      this.carregando = true;
+      this.erro = null;
+      try {
+        const response = await fetch('http://localhost:3050/updatenota', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ usuario }),
+        });
+        if (!response.ok) {
+          throw new Error('Erro atualizando nota do usuario');
+        }
+        await response.json();
+      } catch (err: any) {
+        this.erro = err.message || 'Erro inesperado no updateNota';
+      } finally {
+        this.carregando = false;
       }
     }
   }

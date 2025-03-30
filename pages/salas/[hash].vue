@@ -14,6 +14,8 @@
     const usuario = ref<Usuario | null>(null);
     const nome = ref<string>('');
 
+    const revelado = ref<boolean>(false);
+
     const getUsuario = async () => {
         let usrTmp: Usuario = { nome: usrCookie.value as string, nota: 0, sala: salaPrm };
         usuario.value = store.getUsuario(usrTmp);
@@ -31,12 +33,12 @@
             usuario.value = resposta;
             fetchUsuarios();
         } catch (err) {
-            console.error(err)
+            console.error(err);
         }
     }
     const sair = () => {
         if (usuario.value) {
-            store.removerUsuario( usuario.value )
+            store.removerUsuario( usuario.value );
         }
         usrCookie.value = null;
         nome.value = '';
@@ -45,19 +47,28 @@
     const mudaNota = (nota: number) => {
         let usrTmp: Usuario = { nome: usrCookie.value as string, nota: nota, sala: salaPrm };
         store.updateNota(usrTmp);
+        fetchUsuarios();
     }
 
-    function fetchUsuarios() {
+    const limparNotas = () => {
+        revelado.value = false;
+    }
+
+    const fetchUsuarios = () => {
         useAsyncData('usuarios', () => store.getUsuarios(sala));
     }
 
+    const toggleRevelar = () => {
+        revelado.value = !revelado.value;
+    }
+
     onMounted(() => {
-        const interval = setInterval(() => {
+        const intervalo = setInterval(() => {
             fetchUsuarios();
-        }, 20 * 1000);
+        }, 15 * 1000);
 
         onBeforeUnmount(() => {
-            clearInterval(interval);
+            clearInterval(intervalo);
         });
     });
 
@@ -71,7 +82,7 @@
 <template>
     <template v-if="usrCookie">
         <div class="w-full col-span-10 col-start-2 py-4 px-8 text-center bg-cinza border-cinza-claro rounded-lg">
-            <Usuario v-for="usr in sala?.usuarios" :usuario="usr" />
+            <Usuario v-for="usr in sala?.usuarios" :usuario="usr" :revelado=revelado />
         </div>
 
         <ul class="w-full grid grid-cols-7 col-span-10 col-start-2 py-4 px-8 text-center bg-cinza border-cinza-claro rounded-lg shadow">
@@ -82,6 +93,16 @@
             <Carta nome="5" class="px-2" @click="mudaNota(5)"/>
             <Carta nome="?" checada="true" class="px-2" @click="mudaNota(0)"/>
             <li></li>
+            <li class="col-span-10 pt-4">
+                <button @click="toggleRevelar"
+                    class="mx-2 px-5 py-2 text-cinza bg-cinza-claro hover:bg-laranja focus:outline-none focus:ring-4 focus:ring-cinza-claro font-medium rounded-lg text-sm dark:bg-branco dark:hover:bg-rosa dark:focus:ring-cinza-claro dark:border-cinza">
+                    {{ revelado ? 'Esconder' : 'Revelar'}} Notas
+                </button>
+                <button @click="limparNotas"
+                    class="mx-2 px-5 py-2 text-branco bg-vermelho hover:bg-rosa focus:outline-none focus:ring-4 focus:ring-cinza-claro font-medium rounded-lg text-sm dark:bg-vermelho dark:hover:bg-rosa dark:focus:ring-cinza-claro dark:border-cinza">
+                    Limpar Notas
+                </button>
+            </li>
         </ul>
 
         <button @click="sair" class="col-start-10 row-start-3 justify-self-end">

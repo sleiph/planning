@@ -18,6 +18,7 @@ export default <Partial<Config>>{
             'roxo': '#7e5bef',
             'rosa': '#ff49db',
             'laranja': '#ff7849',
+            'vermelho': '#c30f16',
             'verde': '#13ce66',
             'amarelo': '#ffc82c'
         },

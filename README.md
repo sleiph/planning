@@ -11,13 +11,14 @@ Vue/Nuxt3 -> Pinia -> Typescript -> Tailwind.
 npm install
 # Desenvolvimento
 npm run dev -- -o
-# Production
+# Producao
 npm run build
 # Preview
 npm run preview
 ```
 
-[deployment documentação de deploy](https://nuxt.com/docs/getting-started/deployment)
+[documentação de deploy do nuxt](https://nuxt.com/docs/getting-started/deployment)
+
 
 ### Fazer
 
@@ -25,4 +26,5 @@ npm run preview
 - mudar as cores pra ter dois temas
 - mudar os tamanhos em telas menores
 - verificar se já tem um usuário com o nome escolhido na entrada
-- só deixar deletar a sala se não tiver usuários nela 
+- só deixar deletar a sala se não tiver usuários nela
+- mostrar um erro se não conseguir adicionar usuário, sala, ...

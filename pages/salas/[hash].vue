@@ -1,14 +1,14 @@
 <script setup lang="ts">
 
     import { useRoute } from 'vue-router';
-    import type { Usuario } from '../../types';
+    import type { Usuario, Sala } from '../../types';
 
     const route = useRoute();
     const salaPrm: string = route.params.hash as string;
 
     const store = useWebsiteStore();
     await useAsyncData('salas', () => store.getSalas());
-    const sala = store.salas.find(s => s.hash == salaPrm);
+    const sala: Sala | undefined = store.salas.find(s => s.hash == salaPrm);
 
     const usrCookie = useCookie('usuario');
     const usuario = ref<Usuario | null>(null);
@@ -55,7 +55,7 @@
     }
 
     const fetchUsuarios = () => {
-        useAsyncData('usuarios', () => store.getUsuarios(sala));
+        useAsyncData('usuarios', () => store.getUsuarios(sala!));
     }
 
     const toggleRevelar = () => {

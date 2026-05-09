@@ -1,5 +1,5 @@
 import 'pinia';
-import type { Usuario } from './types';
+import type { Usuario, Sala } from './types';
 
 declare module 'pinia' {
   export interface PiniaCustomProperties {

@@ -1,5 +1,9 @@
 import type { ISalasState, Sala, Usuario } from './../types';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost';
+const API_BASE_PORTA = import.meta.env.VITE_API_BASE_PORTA || '3080';
+const API_KEY = import.meta.env.VITE_API_KEY;
+
 export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('websiteStore', {
   state: () => ({
     salas: [] as Array<Sala>,
@@ -12,7 +16,11 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       this.carregando = true;
       this.erro = null;
       try {
-        const response = await fetch('http://localhost:3050/salas');
+        const response = await fetch(`${API_BASE_URL}:${API_BASE_PORTA}/salas`, {
+          headers: {
+            'x-api-key': API_KEY
+          }
+        });
         if (!response.ok) {
           throw new Error('Erro buscando as salas');
         }
@@ -30,10 +38,11 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       this.carregando = true;
       this.erro = null;
       try {
-        const response = await fetch('http://localhost:3050/addsala', {
+        const response = await fetch(`${API_BASE_URL}:${API_BASE_PORTA}/addsala`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'x-api-key': API_KEY
           },
           body: JSON.stringify({ sala }),
         });
@@ -60,10 +69,11 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       this.carregando = true;
       this.erro = null;
       try {
-        const response = await fetch('http://localhost:3050/removesala', {
+        const response = await fetch(`${API_BASE_URL}:${API_BASE_PORTA}/removesala`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'x-api-key': API_KEY
           },
           body: JSON.stringify({ sala }),
         });
@@ -94,10 +104,11 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       this.carregando = true;
       this.erro = null;
       try {
-        const response = await fetch('http://localhost:3050/getusuarios', {
+        const response = await fetch(`${API_BASE_URL}:${API_BASE_PORTA}/getusuarios`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'x-api-key': API_KEY
           },
           body: JSON.stringify({ sala }),
         });
@@ -144,10 +155,11 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
 
       this.carregando = true;
       try {
-        const response = await fetch('http://localhost:3050/addusuario', {
+        const response = await fetch(`${API_BASE_URL}:${API_BASE_PORTA}/addusuario`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'x-api-key': API_KEY
           },
           body: JSON.stringify({ usuario }),
         });
@@ -178,10 +190,11 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       this.carregando = true;
       this.erro = null;
       try {
-        const response = await fetch('http://localhost:3050/removeusuario', {
+        const response = await fetch(`${API_BASE_URL}:${API_BASE_PORTA}/removeusuario`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'x-api-key': API_KEY
           },
           body: JSON.stringify({ usuario }),
         });
@@ -214,10 +227,11 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       this.carregando = true;
       this.erro = null;
       try {
-        const response = await fetch('http://localhost:3050/updatenota', {
+        const response = await fetch(`${API_BASE_URL}:${API_BASE_PORTA}/updatenota`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'x-api-key': API_KEY
           },
           body: JSON.stringify({ usuario }),
         });

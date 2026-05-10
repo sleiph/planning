@@ -1,7 +1,7 @@
-import type { ISalasState, Sala, Usuario } from './../types';
+import type { ISalasState, Sala, Usuario, Visitante } from './../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost';
-const API_BASE_PORTA = import.meta.env.VITE_API_BASE_PORTA || '3080';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_PORTA = import.meta.env.VITE_API_BASE_PORTA;
 const API_KEY = import.meta.env.VITE_API_KEY;
 
 export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('websiteStore', {
@@ -91,7 +91,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       }
     },
 
-    async getUsuarios(salaHsh: Sala) {
+    async getVisitantes(salaHsh: Sala) {
       if (!salaHsh || !salaHsh.hash)
         return [];
 
@@ -123,7 +123,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       }
     },
 
-    getUsuario(usuario: Usuario): Usuario | null {
+    getVisitante(usuario: Visitante): Visitante | null {
       if (!usuario.nome || !usuario.sala)
         return null;
 
@@ -136,13 +136,13 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       if (!sala.usuarios)
         return null;
       
-      let usrSala : Usuario | undefined = sala.usuarios.find(u => u.nome === usuario.nome);
+      let usrSala : Visitante | undefined = sala.usuarios.find(u => u.nome === usuario.nome);
       if (!usrSala)
         return null;
       return usrSala;
     },
 
-    async addUsuario(usuario:Usuario): Promise<Usuario | null> {
+    async addVisitante(usuario:Visitante): Promise<Visitante | null> {
 
       if (!usuario.nome || !usuario.sala)
         return null;
@@ -173,7 +173,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       }
     },
 
-    async removerUsuario(usuario:Usuario) {
+    async removerVisitante(usuario:Visitante) {
       let sala : Sala | undefined = this.salas.find(s => s.hash === usuario.sala);
 
       if (!sala)
@@ -182,7 +182,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       if (!sala.usuarios)
         return false;
 
-      let usrSala : Usuario | undefined = sala.usuarios.find(u => u.nome === usuario.nome);
+      let usrSala : Visitante | undefined = sala.usuarios.find(u => u.nome === usuario.nome);
 
       if (!usrSala)
         return false;
@@ -210,7 +210,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       }
     },
 
-    async updateNota(usuario: Usuario) {
+    async updateNota(usuario: Visitante) {
       let sala : Sala | undefined = this.salas.find(s => s.hash === usuario.sala);
 
       if (!sala)
@@ -219,7 +219,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       if (!sala.usuarios)
         return false;
 
-      let usrSala : Usuario | undefined = sala.usuarios.find(u => u.nome === usuario.nome);
+      let usrSala : Visitante | undefined = sala.usuarios.find(u => u.nome === usuario.nome);
 
       if (!usrSala)
         return false;
@@ -244,6 +244,56 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       } finally {
         this.carregando = false;
       }
+    },
+
+    async criaUsuario(usuario: Usuario): Promise<Usuario | null> {
+
+      if (!usuario.nome || !usuario.senha)
+        return null;
+
+      this.carregando = true;
+      try {
+        const response = await fetch(`${API_BASE_URL}:${API_BASE_PORTA}/planning/criarusuario`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': API_KEY
+          },
+          body: JSON.stringify({ usuario }),
+        });
+        if (!response.ok) {
+          throw new Error('Erro criando Usuário', { cause: response });
+        }
+        await response.json();
+      } finally {
+        this.carregando = false;
+        return usuario;
+      }
+    },
+
+    async login(usuario: Usuario): Promise<Usuario | null> {
+      this.carregando = true;
+      this.erro = null;
+      try {
+        const response = await fetch(`${API_BASE_URL}:${API_BASE_PORTA}/planning/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': API_KEY
+          },
+          body: JSON.stringify({ usuario }),
+        });
+        if (!response.ok) {
+          throw new Error('Usuário ou senha incorretos');
+        }
+        return await response.json();
+      } catch (err: any) {
+        this.erro = err.message || 'Um erro insperado deveria ter sido esperado...';
+        throw err;
+      } finally {
+        this.carregando = false;
+      }
     }
+
   }
 })

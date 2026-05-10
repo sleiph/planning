@@ -26,5 +26,5 @@ npm run preview
 - mudar as cores pra ter dois temas
 - mudar os tamanhos em telas menores
 - verificar se já tem um usuário com o nome escolhido na entrada
-- só deixar deletar a sala se não tiver usuários nela
+- botão pra remover todos os visitantes da sala
 - mostrar um erro se não conseguir adicionar usuário, sala, ...

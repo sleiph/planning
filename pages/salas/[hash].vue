@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
     import { useRoute } from 'vue-router';
-    import type { Usuario, Sala } from '../../types';
+    import type { Visitante, Sala } from '../../types';
 
     const route = useRoute();
     const salaPrm: string = route.params.hash as string;
@@ -11,22 +11,22 @@
     const sala: Sala | undefined = store.salas.find(s => s.hash == salaPrm);
 
     const usrCookie = useCookie('usuario');
-    const usuario = ref<Usuario | null>(null);
+    const usuario = ref<Visitante | null>(null);
     const nome = ref<string>('');
 
     const revelado = ref<boolean>(false);
 
     const getUsuario = async () => {
-        let usrTmp: Usuario = { nome: usrCookie.value as string, nota: 0, sala: salaPrm };
+        let usrTmp: Visitante = { nome: usrCookie.value as string, nota: 0, sala: salaPrm };
         usuario.value = store.getUsuario(usrTmp);
         if (!usuario.value && usrCookie.value)
             entrar(usrCookie.value as string);
     }
 
     const entrar = async (nome: string) => {
-        let usrTmp: Usuario = { nome: nome, nota: 0, sala: salaPrm };
+        let usrTmp: Visitante = { nome: nome, nota: 0, sala: salaPrm };
         try {
-            let resposta: Usuario = await store.addUsuario(usrTmp);
+            let resposta: Visitante = await store.addUsuario(usrTmp);
             if (resposta?.nome) {
                 usrCookie.value = resposta.nome;
             }
@@ -45,7 +45,7 @@
     }
 
     const mudaNota = (nota: number) => {
-        let usrTmp: Usuario = { nome: usrCookie.value as string, nota: nota, sala: salaPrm };
+        let usrTmp: Visitante = { nome: usrCookie.value as string, nota: nota, sala: salaPrm };
         store.updateNota(usrTmp);
         fetchUsuarios();
     }
@@ -82,7 +82,7 @@
 <template>
     <template v-if="usrCookie">
         <div class="w-full col-span-10 col-start-2 py-4 px-8 text-center bg-cinza border-cinza-claro rounded-lg">
-            <Usuario v-for="usr in sala?.usuarios" :usuario="usr" :revelado=revelado />
+            <Visitante v-for="usr in sala?.usuarios" :usuario="usr" :revelado=revelado />
         </div>
 
         <ul class="w-full grid grid-cols-7 col-span-10 col-start-2 py-4 px-8 text-center bg-cinza border-cinza-claro rounded-lg shadow">

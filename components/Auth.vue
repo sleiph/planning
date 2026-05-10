@@ -1,56 +1,60 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useWebsiteStore } from '../stores/website'
+import { ref } from 'vue';
+import { useWebsiteStore } from '../stores/website';
 
-const store = useWebsiteStore()
-const emit = defineEmits(['authenticated'])
+const store = useWebsiteStore();
+const emit = defineEmits(['authenticated']);
 
-const isLogin = ref(true)
-const username = ref('')
-const password = ref('')
-const loading = ref(false)
-const error = ref('')
+const isLogin = ref(true);
+const usuario = ref('');
+const password = ref('');
+const loading = ref(false);
+const error = ref('');
 
 const toggleMode = () => {
-  isLogin.value = !isLogin.value
-  error.value = ''
+  isLogin.value = !isLogin.value;
+  error.value = '';
 }
 
 const handleSubmit = async () => {
-  if (!username.value.trim()) {
-    error.value = 'Por favor, digite um nome de usuário'
-    return
+  if (!usuario.value.trim()) {
+    error.value = 'Por favor, digite um nome de usuário';
+    return;
   }
 
   if (!password.value.trim()) {
-    error.value = 'Por favor, digite uma senha'
-    return
+    error.value = 'Por favor, digite uma senha';
+    return;
   }
 
-  loading.value = true
-  error.value = ''
+  loading.value = true;
+  error.value = '';
 
   try {
     if (isLogin.value) {
       // Login existing user
-      const userData = { nome: username.value.trim(), senha: password.value, sala: '' }
+      const userData = { nome: usuario.value.trim(), senha: password.value, sala: '' }
       const response = await store.login(userData)
       
       emit('authenticated', {
-        username: response.nome,
-        isAuthenticated: true
-      })
+        usuario: response.nome,
+        isAuthenticated: true,
+        sala: response.sala
+      });
+      console.log(response);//R TODO: deletar
     } else {
-      // Register new user
-      const userData = { nome: username.value.trim(), senha: password.value, sala: '' }
+      // Novo usuario
+      const userData = { nome: usuario.value.trim(), senha: password.value, sala: '' }
       const response = await store.criaUsuario(userData)
       
       emit('authenticated', {
-        username: response.nome,
-        isAuthenticated: true
-      })
+        usuario: response.nome,
+        isAuthenticated: true,
+        sala: response.sala
+      });
     }
   } catch (err: any) {
+    console.error(err);
     error.value = err.message || 'Erro na autenticação. Tente novamente.'
   } finally {
     loading.value = false
@@ -66,12 +70,12 @@ const handleSubmit = async () => {
     
     <form @submit.prevent="handleSubmit" class="space-y-4">
       <div>
-        <label for="username" class="block text-sm font-medium text-gray-300 mb-2">
+        <label for="usuario" class="block text-sm font-medium text-gray-300 mb-2">
           Nome de Usuário
         </label>
         <input
-          id="username"
-          v-model="username"
+          id="usuario"
+          v-model="usuario"
           type="text"
           :disabled="loading"
           class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"

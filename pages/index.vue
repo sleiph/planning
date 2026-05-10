@@ -5,11 +5,9 @@
       Truco de Planejamento
     </h5>
     
-    <Auth v-if="!isAuthenticated" @authenticated="handleAuthentication" />
-    
-    <div v-else class="space-y-4">
+    <div v-if="isAuthenticated && currentUser.sala" class="space-y-4">
       <div class="text-center text-white">
-        <p class="text-lg">Bem-vindo, {{ currentUser.username }}!</p>
+        <p class="text-lg">Bem-vindo, {{ currentUser.usuario }}!</p>
         <button 
           @click="logout"
           class="mt-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition duration-200"
@@ -17,8 +15,10 @@
           Sair
         </button>
       </div>
-      <Salas/>
+      <SalaOpcoes :sala="currentUser.sala"/>
     </div>
+
+    <Auth v-else @authenticated="handleAuthentication" />
 
   </div>
 </template>
@@ -26,19 +26,21 @@
 <script setup>
 import { ref } from 'vue';
 import Auth from '../components/Auth.vue';
+import SalaOpcoes from '~/components/SalaOpcoes.vue';
 
 const isAuthenticated = ref(false);
-const currentUser = ref({ username: '', isAuthenticated: false });
+const currentUser = ref({ usuario: '', isAuthenticated: false, sala: '' });
 
 const handleAuthentication = (userData) => {
   isAuthenticated.value = true;
+  console.log(userData);
   currentUser.value = userData;
   localStorage.setItem('usuario', JSON.stringify(userData));
 }
 
 const logout = () => {
   isAuthenticated.value = false;
-  currentUser.value = { username: '', isAuthenticated: false };
+  currentUser.value = { usuario: '', isAuthenticated: false, sala: '' };
   localStorage.removeItem('usuario');
 }
 

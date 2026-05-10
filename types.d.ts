@@ -15,8 +15,9 @@ export interface Sala {
     usuarios: Visitante[]
 }
 
-export interface ISalasState {
-    salas: Sala[],
+export interface ISalaState {
+    sala: Sala,
+    usuario: Usuario,
     carregando: boolean,
     erro: string | null
 }

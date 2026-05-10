@@ -7,8 +7,8 @@
     const salaPrm: string = route.params.hash as string;
 
     const store = useWebsiteStore();
-    await useAsyncData('salas', () => store.getSalas());
-    const sala: Sala | undefined = store.salas.find(s => s.hash == salaPrm);
+    await useAsyncData('sala', () => store.getSalaByHash(salaPrm));
+    const sala: Sala | undefined = store.sala;
 
     const usrCookie = useCookie('usuario');
     const usuario = ref<Visitante | null>(null);

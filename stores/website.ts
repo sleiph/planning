@@ -1,34 +1,42 @@
-import type { ISalasState, Sala, Usuario, Visitante } from './../types';
+import type { ISalaState, Sala, Usuario, Visitante } from './../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_BASE_PORTA = import.meta.env.VITE_API_BASE_PORTA;
 const API_KEY = import.meta.env.VITE_API_KEY;
 
-export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('websiteStore', {
+export const useWebsiteStore = defineStore<'websiteStore', ISalaState>('websiteStore', {
   state: () => ({
-    salas: [] as Array<Sala>,
+    sala: {} as Sala,
+    usuario: {} as Usuario,
     carregando: false,
     erro: null as string | null
   }),
   actions: {
 
-    async getSalas() {
+    async getSalaByHash(salaHash: string) {
+
+      if (this.sala.hash === salaHash)
+        return this.sala;
+
+      if (!salaHash)
+        return null;
+
       this.carregando = true;
       this.erro = null;
       try {
-        const response = await fetch(`${API_BASE_URL}:${API_BASE_PORTA}/salas`, {
+        const response = await fetch(`${API_BASE_URL}:${API_BASE_PORTA}/planning/sala/${salaHash}`, {
           headers: {
+            'Content-Type': 'application/json',
             'x-api-key': API_KEY
-          }
+          },
+          body: JSON.stringify({ sala: { hash: salaHash } }),
         });
         if (!response.ok) {
-          throw new Error('Erro buscando as salas');
+          throw new Error('Erro buscando a sala');
         }
-        this.salas = await response.json();
-        return true;
+        this.sala = await response.json();
       } catch (err: any) {
         this.erro = err.message || 'Um erro insperado deveria ter sido esperado';
-        return false;
       } finally {
         this.carregando = false;
       }
@@ -51,39 +59,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
         }
         await response.json();
         sala.usuarios = [];
-        this.salas.push(sala);
-      } catch (err: any) {
-        this.erro = err.message || 'Erro inesperado no addSala';
-      } finally {
-        this.carregando = false;
-      }
-    },
-
-    async removerSala(sala: Sala) {
-
-      let salaArr = this.salas.find(s => s.hash===sala.hash);
-
-      if (!salaArr)
-        return false;
-
-      this.carregando = true;
-      this.erro = null;
-      try {
-        const response = await fetch(`${API_BASE_URL}:${API_BASE_PORTA}/removesala`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': API_KEY
-          },
-          body: JSON.stringify({ sala }),
-        });
-        if (!response.ok) {
-          throw new Error('Falha ao remover sala');
-        }
-        await response.json();
-
-        let indice = this.salas.indexOf(salaArr);
-        this.salas.splice(indice, 1);
+        this.sala = sala;
       } catch (err: any) {
         this.erro = err.message || 'Erro inesperado no addSala';
       } finally {
@@ -95,7 +71,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       if (!salaHsh || !salaHsh.hash)
         return [];
 
-      let sala : Sala | undefined = this.salas.find(s => s.hash === salaHsh.hash);
+      let sala : Sala | undefined = this.sala;
 
       if (!sala) {
         throw new Error('Sala não encontrada');
@@ -113,7 +89,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
           body: JSON.stringify({ sala }),
         });
         if (!response.ok) {
-          throw new Error('Erro buscando as salas');
+          throw new Error('Erro buscando a sala');
         }
         sala.usuarios = await response.json();
       } catch (err: any) {
@@ -127,7 +103,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       if (!usuario.nome || !usuario.sala)
         return null;
 
-      let sala : Sala | undefined = this.salas.find(s => s.hash === usuario.sala);
+      let sala : Sala | undefined = this.sala;
 
       if (!sala) {
         throw new Error('Sala não encontrada');
@@ -147,7 +123,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
       if (!usuario.nome || !usuario.sala)
         return null;
 
-      let sala : Sala | undefined = this.salas.find(s => s.hash === usuario.sala);
+      let sala : Sala | undefined = this.sala;
 
       if (!sala) {
         throw new Error('Sala não encontrada');
@@ -174,7 +150,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
     },
 
     async removerVisitante(usuario:Visitante) {
-      let sala : Sala | undefined = this.salas.find(s => s.hash === usuario.sala);
+      let sala : Sala | undefined = this.sala;
 
       if (!sala)
         return false;
@@ -211,7 +187,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
     },
 
     async updateNota(usuario: Visitante) {
-      let sala : Sala | undefined = this.salas.find(s => s.hash === usuario.sala);
+      let sala : Sala | undefined = this.sala;
 
       if (!sala)
         return false;
@@ -264,10 +240,12 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
         if (!response.ok) {
           throw new Error('Erro criando Usuário', { cause: response });
         }
-        await response.json();
+        let resposta = await response.json();
+        this.sala = resposta.sala;
+        this.usuario = resposta.usuario;
+        return resposta.usuario;
       } finally {
         this.carregando = false;
-        return usuario;
       }
     },
 
@@ -286,7 +264,12 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalasState>('website
         if (!response.ok) {
           throw new Error('Usuário ou senha incorretos');
         }
-        return await response.json();
+        let resposta = await response.json();
+        this.sala = resposta.sala;
+        console.log(resposta);
+        console.log(this.sala);
+        this.usuario = resposta.usuario;
+        return resposta.usuario;
       } catch (err: any) {
         this.erro = err.message || 'Um erro insperado deveria ter sido esperado...';
         throw err;

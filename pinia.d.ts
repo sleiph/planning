@@ -3,7 +3,7 @@ import type { Usuario, Sala } from './types';
 
 declare module 'pinia' {
   export interface PiniaCustomProperties {
-    getSalas: () => Promise<Array<Sala>>,
+    getSalaByHash: (salaHash: string) => Promise<Sala | null>,
     getUsuarios: (sala:Sala) => Promise<Array<Visitante>>,
     getUsuario: (usuario:Visitante) => Visitante | null,
     addUsuario: (usuario:Visitante) => Promise<Visitante>,

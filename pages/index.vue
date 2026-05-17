@@ -1,5 +1,5 @@
 <template>
-  <div class="col-span-10 col-start-2 space-y-6">
+  <div class="col-span-12 space-y-6">
 
     <h5 class="text-branco text-center text-3xl font-bold text-gray-900 dark:text-white">
       Truco de Planejamento
@@ -7,7 +7,7 @@
     
     <div v-if="isAuthenticated && currentUser.sala" class="space-y-4">
       <div class="text-center text-white">
-        <p class="text-lg">Bem-vindo, {{ currentUser.usuario }}!</p>
+        <p class="text-lg">Eae, {{ currentUser.usuario }}!</p>
         <button 
           @click="logout"
           class="mt-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition duration-200"

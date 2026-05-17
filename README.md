@@ -28,3 +28,5 @@ npm run preview
 - verificar se já tem um usuário com o nome escolhido na entrada
 - botão pra remover todos os visitantes da sala
 - mostrar um erro se não conseguir adicionar usuário, sala, ...
+- deletar os console.log
+- resolver os erros de hidration

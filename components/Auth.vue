@@ -32,7 +32,7 @@ const handleSubmit = async () => {
 
   try {
     if (isLogin.value) {
-      // Login existing user
+
       const userData = { nome: usuario.value.trim(), senha: password.value, sala: '' }
       const response = await store.login(userData)
       
@@ -63,7 +63,7 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div class="col-span-10 col-start-2 max-w-md mx-auto bg-gray-800 rounded-lg shadow-lg p-6">
+  <div class="col-span-10 col-start-2 max-w-md mx-auto bg-gray-800 rounded-lg shadow-lg p-6 space-y-4">
     <h2 class="text-2xl font-bold text-white text-center mb-6">
       {{ isLogin ? 'Login' : 'Cadastro' }}
     </h2>

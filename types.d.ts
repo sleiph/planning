@@ -12,7 +12,7 @@ export interface Visitante {
 
 export interface Sala {
     hash: string,
-    usuarios: Visitante[]
+    visitantes: Visitante[]
 }
 
 export interface ISalaState {

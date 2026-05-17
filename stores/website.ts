@@ -15,11 +15,11 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalaState>('websiteS
 
     async getSalaByHash(salaHash: string) {
 
-      if (this.sala.hash === salaHash)
-        return this.sala;
-
       if (!salaHash)
         return null;
+
+      if (this.sala.hash === salaHash)
+        return this.sala;
 
       this.carregando = true;
       this.erro = null;
@@ -29,13 +29,13 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalaState>('websiteS
             'Content-Type': 'application/json',
             'x-api-key': API_KEY
           },
-          body: JSON.stringify({ sala: { hash: salaHash } }),
         });
         if (!response.ok) {
           throw new Error('Erro buscando a sala');
         }
         this.sala = await response.json();
       } catch (err: any) {
+        console.error(err);
         this.erro = err.message || 'Um erro insperado deveria ter sido esperado';
       } finally {
         this.carregando = false;
@@ -58,7 +58,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalaState>('websiteS
           throw new Error('Falha ao adicionar sala');
         }
         await response.json();
-        sala.usuarios = [];
+        sala.visitantes = [];
         this.sala = sala;
       } catch (err: any) {
         this.erro = err.message || 'Erro inesperado no addSala';
@@ -91,7 +91,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalaState>('websiteS
         if (!response.ok) {
           throw new Error('Erro buscando a sala');
         }
-        sala.usuarios = await response.json();
+        sala.visitantes = await response.json();
       } catch (err: any) {
         this.erro = err.message || 'Um erro insperado deveria ter sido esperado';
       } finally {
@@ -109,18 +109,18 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalaState>('websiteS
         throw new Error('Sala não encontrada');
       }
 
-      if (!sala.usuarios)
+      if (!sala.visitantes)
         return null;
       
-      let usrSala : Visitante | undefined = sala.usuarios.find(u => u.nome === usuario.nome);
+      let usrSala : Visitante | undefined = sala.visitantes.find(u => u.nome === usuario.nome);
       if (!usrSala)
         return null;
       return usrSala;
     },
 
-    async addVisitante(usuario:Visitante): Promise<Visitante | null> {
+    async addVisitante(visitante:Visitante): Promise<Visitante | null> {
 
-      if (!usuario.nome || !usuario.sala)
+      if (!visitante.nome || !visitante.sala)
         return null;
 
       let sala : Sala | undefined = this.sala;
@@ -128,6 +128,11 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalaState>('websiteS
       if (!sala) {
         throw new Error('Sala não encontrada');
       }
+
+      let visitanteSala = sala.visitantes.find(u => u.nome === visitante.nome);
+
+      if (visitanteSala)
+        return visitanteSala;
 
       this.carregando = true;
       try {
@@ -137,7 +142,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalaState>('websiteS
             'Content-Type': 'application/json',
             'x-api-key': API_KEY
           },
-          body: JSON.stringify({ usuario }),
+          body: JSON.stringify({ visitante }),
         });
         /*if (!response.ok) {
           throw new Error('Failed to post user');
@@ -145,7 +150,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalaState>('websiteS
         await response.json();
       } finally {
         this.carregando = false;
-        return usuario;
+        return visitante;
       }
     },
 
@@ -155,10 +160,10 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalaState>('websiteS
       if (!sala)
         return false;
 
-      if (!sala.usuarios)
+      if (!sala.visitantes)
         return false;
 
-      let usrSala : Visitante | undefined = sala.usuarios.find(u => u.nome === usuario.nome);
+      let usrSala : Visitante | undefined = sala.visitantes.find(u => u.nome === usuario.nome);
 
       if (!usrSala)
         return false;
@@ -192,10 +197,10 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalaState>('websiteS
       if (!sala)
         return false;
 
-      if (!sala.usuarios)
+      if (!sala.visitantes)
         return false;
 
-      let usrSala : Visitante | undefined = sala.usuarios.find(u => u.nome === usuario.nome);
+      let usrSala : Visitante | undefined = sala.visitantes.find(u => u.nome === usuario.nome);
 
       if (!usrSala)
         return false;
@@ -241,7 +246,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalaState>('websiteS
           throw new Error('Erro criando Usuário', { cause: response });
         }
         let resposta = await response.json();
-        this.sala = resposta.sala;
+        this.sala = { hash: resposta.sala as string, visitantes: [] };
         this.usuario = resposta.usuario;
         return resposta.usuario;
       } finally {
@@ -265,7 +270,7 @@ export const useWebsiteStore = defineStore<'websiteStore', ISalaState>('websiteS
           throw new Error('Usuário ou senha incorretos');
         }
         let resposta = await response.json();
-        this.sala = resposta.sala;
+        this.sala = { hash: resposta.usuario.sala as string, visitantes: [] };
         console.log(resposta);
         console.log(this.sala);
         this.usuario = resposta.usuario;

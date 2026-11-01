@@ -3,7 +3,7 @@ import { socket } from '../socket';
 import ParticipantList from './ParticipantList';
 import VotingArea from './VotingArea';
 import OrganizerPanel from './OrganizerPanel';
-import { Copy, Check, Users, Settings, Play, ArrowLeft, LogOut, Crown } from 'lucide-react';
+import { Copy, Check, Users, Settings, Play, ArrowLeft, LogOut, Crown, Eye, EyeOff } from 'lucide-react';
 
 export default function Room({ roomId, userName, isOrganizer, onLeave }) {
   const [room, setRoom] = useState(null);
@@ -14,7 +14,8 @@ export default function Room({ roomId, userName, isOrganizer, onLeave }) {
   useEffect(() => {
     socket.connect();
 
-    socket.emit('join-room', { roomId, userName, isOrganizer });
+    let organizerToken = localStorage.getItem('planning_poker_organizer_token');
+    socket.emit('join-room', { roomId, userName, isOrganizer, organizerToken });
 
     socket.on('room-update', (updatedRoom) => {
       setRoom(updatedRoom);
@@ -32,6 +33,11 @@ export default function Room({ roomId, userName, isOrganizer, onLeave }) {
     navigator.clipboard.writeText(link);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
+  };
+
+  const handleToggleReveal = () => {
+    if (!room) return;
+    socket.emit('reveal-votes', { roomId, revealed: !room.votesRevealed });
   };
 
   if (loading || !room) {
@@ -78,6 +84,30 @@ export default function Room({ roomId, userName, isOrganizer, onLeave }) {
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Organizer Reveal / Hide Button */}
+          {userIsOrganizer && room.currentTaskId && (
+            <button
+              onClick={handleToggleReveal}
+              className={`px-3.5 py-2 rounded-xl font-medium text-xs flex items-center gap-2 transition-all cursor-pointer ${
+                room.votesRevealed
+                  ? 'bg-amber-600/20 text-amber-300 border border-amber-500/30 hover:bg-amber-600/30'
+                  : 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-lg shadow-indigo-600/20'
+              }`}
+            >
+              {room.votesRevealed ? (
+                <>
+                  <EyeOff className="w-4 h-4" />
+                  <span>Ocultar Notas</span>
+                </>
+              ) : (
+                <>
+                  <Eye className="w-4 h-4" />
+                  <span>Revelar Notas</span>
+                </>
+              )}
+            </button>
+          )}
+
           {/* Share room link */}
           <button
             onClick={handleCopyLink}
@@ -134,7 +164,7 @@ export default function Room({ roomId, userName, isOrganizer, onLeave }) {
           {activeTab === 'voting' || !userIsOrganizer ? (
             <VotingArea room={room} roomId={roomId} currentUserId={currentUserId} />
           ) : (
-            <OrganizerPanel room={room} roomId={roomId} />
+            <OrganizerPanel room={room} roomId={roomId} currentUserId={currentUserId} />
           )}
         </main>
 

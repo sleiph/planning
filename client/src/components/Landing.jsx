@@ -19,13 +19,21 @@ export default function Landing({ onRoomCreated, onRoomJoined }) {
     setError('');
     setLoading(true);
 
+    let organizerToken = localStorage.getItem('planning_poker_organizer_token');
+    if (!organizerToken) {
+      organizerToken = 'org_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
+      localStorage.setItem('planning_poker_organizer_token', organizerToken);
+    }
+
     try {
       const res = await fetch('http://localhost:4000/api/rooms', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ roomName, organizerName })
+        body: JSON.stringify({ roomName, organizerName, organizerToken })
       });
       const room = await res.json();
+      localStorage.setItem(`planning_poker_name_${room.id}`, organizerName);
+      localStorage.setItem(`planning_poker_is_organizer_${room.id}`, 'true');
       onRoomCreated(room.id, organizerName, true);
     } catch (err) {
       console.error(err);
@@ -41,7 +49,9 @@ export default function Landing({ onRoomCreated, onRoomJoined }) {
       return;
     }
     setError('');
-    onRoomJoined(roomId.trim(), userName.trim());
+    const targetRoomId = roomId.trim();
+    const isStoredOrganizer = localStorage.getItem(`planning_poker_is_organizer_${targetRoomId}`) === 'true';
+    onRoomJoined(targetRoomId, userName.trim(), isStoredOrganizer);
   };
 
   return (

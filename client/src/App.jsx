@@ -7,6 +7,7 @@ export default function App() {
   const [userName, setUserName] = useState('');
   const [isOrganizer, setIsOrganizer] = useState(false);
   const [needsNamePrompt, setNeedsNamePrompt] = useState(false);
+  const [inputName, setInputName] = useState('');
 
   // Check URL path on mount (e.g. /room/xxxx)
   useEffect(() => {
@@ -15,10 +16,11 @@ export default function App() {
     if (match) {
       const targetRoomId = match[1];
       const savedName = localStorage.getItem(`planning_poker_name_${targetRoomId}`);
+      const isStoredOrganizer = localStorage.getItem(`planning_poker_is_organizer_${targetRoomId}`) === 'true';
       if (savedName) {
         setRoomId(targetRoomId);
         setUserName(savedName);
-        setIsOrganizer(false);
+        setIsOrganizer(isStoredOrganizer);
       } else {
         setRoomId(targetRoomId);
         setNeedsNamePrompt(true);
@@ -30,15 +32,22 @@ export default function App() {
     setUserName(name);
     setIsOrganizer(organizerStatus);
     localStorage.setItem(`planning_poker_name_${newRoomId}`, name);
+    if (organizerStatus) {
+      localStorage.setItem(`planning_poker_is_organizer_${newRoomId}`, 'true');
+    }
     window.history.pushState({}, '', `/room/${newRoomId}`);
     setRoomId(newRoomId);
     setNeedsNamePrompt(false);
   };
 
-  const handleRoomJoined = (targetRoomId, name) => {
+  const handleRoomJoined = (targetRoomId, name, explicitOrganizer = false) => {
     setUserName(name);
-    setIsOrganizer(false);
+    const isStoredOrganizer = explicitOrganizer || localStorage.getItem(`planning_poker_is_organizer_${targetRoomId}`) === 'true';
+    setIsOrganizer(isStoredOrganizer);
     localStorage.setItem(`planning_poker_name_${targetRoomId}`, name);
+    if (isStoredOrganizer) {
+      localStorage.setItem(`planning_poker_is_organizer_${targetRoomId}`, 'true');
+    }
     window.history.pushState({}, '', `/room/${targetRoomId}`);
     setRoomId(targetRoomId);
     setNeedsNamePrompt(false);
@@ -54,7 +63,6 @@ export default function App() {
 
   // If user opened a room link directly but needs to provide name
   if (needsNamePrompt && roomId) {
-    const [inputName, setInputName] = useState('');
     const handleSubmitName = (e) => {
       e.preventDefault();
       if (!inputName.trim()) return;

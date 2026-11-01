@@ -29,13 +29,23 @@ app.get('/api/health', (req, res) => {
 
 // Create a new room endpoint
 app.post('/api/rooms', (req, res) => {
-  const { roomName, organizerName } = req.body;
+  const { roomName, organizerName, organizerToken } = req.body;
+  
+  if (organizerToken) {
+    for (const [rId, rObj] of rooms.entries()) {
+      if (rObj.organizerToken === organizerToken) {
+        rooms.delete(rId);
+      }
+    }
+  }
+
   const roomId = uuidv4().substring(0, 8);
   
   const newRoom = {
     id: roomId,
     name: roomName || 'Planning Poker Room',
     organizerName: organizerName || 'Organizer',
+    organizerToken: organizerToken || null,
     cardDeck: [...DEFAULT_DECK],
     tasks: [],
     currentTaskId: null,
@@ -62,7 +72,7 @@ io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
 
   // Join Room
-  socket.on('join-room', ({ roomId, userName, isOrganizer }) => {
+  socket.on('join-room', ({ roomId, userName, isOrganizer, organizerToken }) => {
     let room = rooms.get(roomId);
     if (!room) {
       // If room doesn't exist in memory yet, create it
@@ -70,6 +80,7 @@ io.on('connection', (socket) => {
         id: roomId,
         name: 'Planning Poker Room',
         organizerName: userName,
+        organizerToken: organizerToken || null,
         cardDeck: [...DEFAULT_DECK],
         tasks: [],
         currentTaskId: null,
@@ -84,9 +95,17 @@ io.on('connection', (socket) => {
     socket.roomId = roomId;
     socket.userName = userName;
 
-    // Determine if this user is organizer (if they claim to be or if first user / room creator)
-    const organizerPresent = Object.values(room.users).some(u => u.isOrganizer);
-    const userIsOrganizer = isOrganizer || !organizerPresent;
+    let userIsOrganizer = false;
+    if (organizerToken && room.organizerToken && room.organizerToken === organizerToken) {
+      userIsOrganizer = true;
+    } else if (!room.organizerToken && (isOrganizer || Object.keys(room.users).length === 0)) {
+      if (organizerToken) {
+        room.organizerToken = organizerToken;
+      }
+      userIsOrganizer = true;
+    } else {
+      userIsOrganizer = isOrganizer && (!room.organizerToken || room.organizerToken === organizerToken);
+    }
 
     room.users[socket.id] = {
       id: socket.id,
@@ -238,19 +257,6 @@ io.on('connection', (socket) => {
     if (roomId && rooms.has(roomId)) {
       const room = rooms.get(roomId);
       delete room.users[socket.id];
-
-      // If organizer left, assign organizer to another user if available
-      if (room.users && Object.keys(room.users).length > 0) {
-        const hasOrganizer = Object.values(room.users).some(u => u.isOrganizer);
-        if (!hasOrganizer) {
-          const firstUserKey = Object.keys(room.users)[0];
-          room.users[firstUserKey].isOrganizer = true;
-          room.organizerName = room.users[firstUserKey].name;
-        }
-      } else {
-        // Optional: keep room alive or clean up after empty
-      }
-
       io.to(roomId).emit('room-update', sanitizeRoom(room));
     }
   });

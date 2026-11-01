@@ -2,7 +2,22 @@ import React, { useState } from 'react';
 import { socket } from '../socket';
 import { Plus, Trash2, Edit2, Check, X, Layers, Settings, Play, Award } from 'lucide-react';
 
-export default function OrganizerPanel({ room, roomId }) {
+export default function OrganizerPanel({ room, roomId, currentUserId }) {
+  const currentTaskId = room.currentTaskId;
+  const currentTask = room.tasks?.find(t => t.id === currentTaskId);
+  const currentVotes = (currentTaskId && room.votes && room.votes[currentTaskId]) || {};
+  const myVote = currentVotes[currentUserId];
+
+  const handleCastVote = (voteValue) => {
+    if (!currentTaskId) return;
+    socket.emit('cast-vote', { roomId, taskId: currentTaskId, vote: voteValue });
+  };
+
+  const handleClearMyVote = () => {
+    if (!currentTaskId) return;
+    socket.emit('clear-vote', { roomId, taskId: currentTaskId });
+  };
+
   // Task form state
   const [taskTitle, setTaskTitle] = useState('');
   const [taskDesc, setTaskDesc] = useState('');
@@ -80,6 +95,47 @@ export default function OrganizerPanel({ room, roomId }) {
   return (
     <div className="space-y-6 max-w-4xl mx-auto pb-12">
       
+      {/* Current Task Voting for Organizer */}
+      {currentTask && (
+        <div className="bg-gradient-to-r from-indigo-950/40 via-slate-900 to-slate-900 border border-indigo-500/40 rounded-2xl p-6 shadow-xl">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-1 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[10px] font-bold uppercase tracking-wider rounded-lg">
+                Seu Voto (Organizador)
+              </span>
+              <span className="text-sm font-bold text-white truncate max-w-xs">{currentTask.title}</span>
+            </div>
+            {myVote !== undefined && (
+              <button
+                onClick={handleClearMyVote}
+                className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1 cursor-pointer"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                Apagar meu voto
+              </button>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2 justify-center pt-2">
+            {room.cardDeck && room.cardDeck.map((card, idx) => {
+              const isSelected = myVote === card;
+              return (
+                <button
+                  key={idx}
+                  onClick={() => handleCastVote(card)}
+                  className={`w-12 h-16 sm:w-14 sm:h-20 rounded-xl font-mono text-lg font-bold flex items-center justify-center transition-all cursor-pointer shadow-md ${
+                    isSelected
+                      ? 'bg-indigo-600 text-white -translate-y-1 ring-2 ring-indigo-400 border border-indigo-300'
+                      : 'bg-slate-950 hover:bg-slate-800 text-slate-200 border border-slate-700 hover:border-indigo-500/50'
+                  }`}
+                >
+                  {card}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Room Settings */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
         <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">

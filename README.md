@@ -51,7 +51,9 @@ npm run start:prod
 
 ## 📋 Fazer
 
-- [ ] Ajustar nome da página e metadados
+- [ ] Feedback visual quando card é escolhido
+- [ ] Adicionar nome da sala no título da página
 - [ ] Refinamentos de estilos e UI/UX
-- [ ] Migração para template TypeScript
-- [ ] Passar o servidor pra um projeto próprio
+- [ ] Passar o servidor pra um projeto próprio?
+- [ ] Tirar todo esse texto de IA
+- [ ] Usar um banco de dados e criar logins persistentes

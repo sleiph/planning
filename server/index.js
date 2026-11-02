@@ -17,12 +17,12 @@ const io = new Server(server, {
   }
 });
 
-// In-memory database for rooms
+// Banco de dados em memória
 // roomId -> Room Object
 const rooms = new Map();
 
 // Default card deck
-const DEFAULT_DECK = ['0', '1', '2', '3', '5', '8', '13', '21', '34', '?', '☕'];
+const DEFAULT_DECK = ['1', '2', '3', '5', '?', '☕'];
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
@@ -84,7 +84,6 @@ io.on('connection', (socket) => {
   socket.on('join-room', ({ roomId, userName, isOrganizer, organizerToken }) => {
     let room = rooms.get(roomId);
     if (!room) {
-      // If room doesn't exist in memory yet, create it
       room = {
         id: roomId,
         name: 'Planning Poker Room',
@@ -271,8 +270,12 @@ io.on('connection', (socket) => {
   });
 });
 
-// Helper function to send room state to clients
-// If votes are NOT revealed, hide the actual vote values so players don't see others' votes
+/**
+ * Helper function to send room state to clients
+ * If votes are NOT revealed, hide the actual vote values so players don't see others' votes
+ * @param {*} room sala alvo
+ * @returns objeto com a sala e os votos sanitizados
+ */
 function sanitizeRoom(room) {
   const sanitizedVotes = {};
   

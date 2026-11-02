@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users, PlusCircle, LogIn, Sparkles, ShieldCheck } from 'lucide-react';
+import { Users, PlusCircle, LogIn, PlayingCardsFan, Settings } from 'lucide-react';
 
 export default function Landing({ onRoomCreated, onRoomJoined }) {
   const [mode, setMode] = useState('home'); // 'home' | 'create' | 'join'
@@ -67,11 +67,11 @@ export default function Landing({ onRoomCreated, onRoomJoined }) {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-600/20 text-indigo-400 rounded-2xl mb-4 border border-indigo-500/30">
-            <Sparkles className="w-8 h-8" />
+            <PlayingCardsFan className="w-8 h-8" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-white">Planning Poker</h1>
           <p className="text-sm text-slate-400 mt-2">
-            Estime tarefas de sprint com sua equipe de forma ágil, colaborativa e em tempo real.
+            Planeje a Sprint estimando o esforço de cada tarefa com sua equipe.
           </p>
         </div>
 
@@ -88,7 +88,7 @@ export default function Landing({ onRoomCreated, onRoomJoined }) {
               className="w-full py-3.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 group cursor-pointer"
             >
               <PlusCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
-              Criar Nova Sala (Organizador)
+              Criar Nova Sala
             </button>
 
             <button
@@ -100,8 +100,8 @@ export default function Landing({ onRoomCreated, onRoomJoined }) {
             </button>
 
             <div className="pt-6 border-t border-slate-800 text-center text-xs text-slate-500 flex items-center justify-center gap-1">
-              <ShieldCheck className="w-4 h-4 text-emerald-500" />
-              <span>Salas protegidas com votação oculta e revelação em tempo real</span>
+              <Settings className="w-4 h-4 text-emerald-500" />
+              <span>A sala pode ser customizada pelo organizador após a criação.</span>
             </div>
           </div>
         )}

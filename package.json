@@ -1,26 +1,21 @@
 {
-  "name": "nuxt-app",
-  "private": true,
-  "type": "module",
+  "name": "planning-poker-app",
+  "version": "1.0.0",
+  "description": "Planning Poker web application for sprint estimation",
+  "main": "server/index.js",
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "start": "node server/index.js",
+    "start:prod": "npm run build && NODE_ENV=production node server/index.js",
+    "build": "npm run build:client",
+    "dev:server": "node server/index.js",
+    "dev:client": "npm run dev --prefix client",
+    "build:client": "npm run build --prefix client",
+    "install:all": "npm install && npm install --prefix client"
   },
   "dependencies": {
-    "@nuxt/icon": "^1.4.5",
-    "@nuxtjs/tailwindcss": "^6.12.1",
-    "@pinia/nuxt": "^0.10.1",
-    "nuxt": "^3.15.4",
-    "pinia": "^3.0.1",
-    "vue": "latest"
-  },
-  "devDependencies": {
-    "@iconify-json/bx": "^1.1.11"
-  },
-  "overrides": {
-    "vue": "latest"
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5",
+    "uuid": "^9.0.1"
   }
 }

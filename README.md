@@ -1,32 +1,25 @@
-# Planning
+## Tecnologias
 
-Site pra fazer o planning poker sem precisar ficar vendo publicidades suspeitas em sites quebrados.
+- React
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) usa [Oxc](https://oxc.rs)
 
-Vue/Nuxt3 -> Pinia -> Typescript -> Tailwind.
 
-### Comandos
+## Como rodar
 
-```bash
-# Setup
-npm install
-# Desenvolvimento
-npm run dev -- -o
-# Producao
-npm run build
-# Preview
-npm run preview
+```shell
+npm run install:all
+npm run dev:server
+npm run dev:client
 ```
 
-[documentação de deploy do nuxt](https://nuxt.com/docs/getting-started/deployment)
+```shell
+npm run install:all
+npm run build
+npm run start:prod
+```
 
+## Fazer
 
-### Fazer
-
-- usar typescript em tudo
-- mudar as cores pra ter dois temas
-- mudar os tamanhos em telas menores
-- verificar se já tem um usuário com o nome escolhido na entrada
-- botão pra remover todos os visitantes da sala
-- mostrar um erro se não conseguir adicionar usuário, sala, ...
-- deletar os console.log
-- resolver os erros de hidration
+- Estilos
+- [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts)
+- Passar o servidor pra um projeto próprio

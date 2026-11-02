@@ -12,6 +12,12 @@ npm run dev:server
 npm run dev:client
 ```
 
+```shell
+npm run install:all
+npm run build
+npm run start:prod
+```
+
 ## Fazer
 
 - Estilos

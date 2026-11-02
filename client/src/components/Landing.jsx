@@ -26,7 +26,13 @@ export default function Landing({ onRoomCreated, onRoomJoined }) {
     }
 
     try {
-      const res = await fetch('http://localhost:4000/api/rooms', {
+      const API_URL = import.meta.env.PROD
+        ? ''
+        : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:4000'
+            : window.location.origin.replace(/:\d+$/, ':4000'));
+
+      const res = await fetch(`${API_URL}/api/rooms`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ roomName, organizerName, organizerToken })

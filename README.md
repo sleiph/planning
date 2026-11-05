@@ -9,7 +9,7 @@ Aplicação web em tempo real pra estimativas de esforço em equipes ágeis (Scr
 - **Votação Interativa:** Participantes votam simultaneamente com feedback visual em tempo real.
 - **Lista de Participantes:** Acompanhamento dinâmico de quem está presente na sala e o status de voto de cada membro.
 
-## 💻 Tecnologias
+## Tecnologias
 
 ### Backend
 - **Node.js** & **Express**
@@ -44,16 +44,19 @@ npm run build
 npm run start:prod
 ```
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 - `server/` - Servidor backend (Node.js, Express e Socket.io) responsável pela lógica de salas e eventos em tempo real.
 - `client/` - Aplicação frontend (React, Vite, Tailwind CSS) contendo as telas de Landing, Sala, Votação e Painel do Organizador.
 
-## 📋 Fazer
+## Fazer
 
+- [ ] Apagar as notas de todos e ocultar, pra revotar a tarefa
+- [ ] Persistir as notas quando fechar a votação, idependente se o usuário saiu ou continua na página
+- [ ] Corrigir responsividade
 - [ ] Feedback visual quando card é escolhido
 - [ ] Adicionar nome da sala no título da página
-- [ ] Refinamentos de estilos e UI/UX
-- [ ] Passar o servidor pra um projeto próprio?
 - [ ] Tirar todo esse texto de IA
-- [ ] Usar um banco de dados e criar logins persistentes
+- [ ] Usar um banco de dados e criar logins persistidos
+- [ ] Passar o servidor pra um projeto próprio?
+- [ ] Revelar automaticamente as notas quando todos tiverem votado?

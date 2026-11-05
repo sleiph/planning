@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users, PlusCircle, LogIn, PlayingCardsFan, Settings, CheckCircle2, Zap, ShieldCheck } from 'lucide-react';
+import { PlusCircle, LogIn, PlayingCardsFan, Settings } from 'lucide-react';
 
 export default function Landing({ onRoomCreated, onRoomJoined }) {
   const [mode, setMode] = useState('home'); // 'home' | 'create' | 'join'
@@ -203,12 +203,6 @@ export default function Landing({ onRoomCreated, onRoomJoined }) {
 
       </div>
 
-      {/* SEO */}
-      <footer className="max-w-3xl w-full mt-12 text-slate-400 text-xs space-y-6 border-t border-slate-800/80 pt-8 px-4">
-        <div className="text-center text-slate-500 text-[11px] pb-2">
-          &copy; {new Date().getFullYear()} Planning Poker. Ferramenta de estimativa ágil pra Sprints Scrum.
-        </div>
-      </footer>
     </div>
   );
 }

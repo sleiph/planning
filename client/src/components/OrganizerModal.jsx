@@ -65,6 +65,10 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
     socket.emit('set-current-task', { roomId, taskId });
   };
 
+  const handleResetTaskVotes = (taskId) => {
+    socket.emit('reset-task-votes', { roomId, taskId });
+  };
+
   const handleSaveEdit = (taskId) => {
     socket.emit('update-task', {
       roomId,
@@ -306,6 +310,14 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
                                   Ativa
                                 </span>
                               )}
+
+                              <button
+                                onClick={() => handleResetTaskVotes(task.id)}
+                                className="p-1.5 bg-slate-800 hover:bg-slate-700 text-rose-400 rounded-lg transition-colors cursor-pointer"
+                                title="Limpar Votos e Revotar Tarefa"
+                              >
+                                <RotateCcw className="w-3.5 h-3.5" />
+                              </button>
 
                               <button
                                 onClick={() => {

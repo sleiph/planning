@@ -9,7 +9,8 @@ import {
   ArrowLeft,
   Trash2,
   Settings,
-  Sparkles
+  Sparkles,
+  RotateCcw
 } from 'lucide-react';
 
 export default function VotingArea({ room, roomId, currentUserId, onOpenSettings }) {
@@ -34,6 +35,11 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
 
   const handleToggleReveal = () => {
     socket.emit('reveal-votes', { roomId, revealed: !votesRevealed });
+  };
+
+  const handleResetVotes = () => {
+    if (!currentTaskId) return;
+    socket.emit('reset-task-votes', { roomId, taskId: currentTaskId });
   };
 
   const handleSetFinalScore = (score) => {
@@ -176,26 +182,38 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
 
           {/* Reveal / Hide Toggle inside table for quick access */}
           {isOrganizer && (
-            <button
-              onClick={handleToggleReveal}
-              className={`px-3 py-1.5 rounded-xl font-medium text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
-                votesRevealed
-                  ? 'bg-amber-600/20 text-amber-300 border border-amber-500/30 hover:bg-amber-600/30'
-                  : 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-md shadow-indigo-600/20'
-              }`}
-            >
-              {votesRevealed ? (
-                <>
-                  <EyeOff className="w-3.5 h-3.5" />
-                  <span>Ocultar Notas</span>
-                </>
-              ) : (
-                <>
-                  <Eye className="w-3.5 h-3.5" />
-                  <span>Revelar Notas</span>
-                </>
+            <div className="flex items-center gap-2">
+              {votesRevealed && (
+                <button
+                  onClick={handleResetVotes}
+                  className="px-3 py-1.5 rounded-xl font-medium text-xs flex items-center gap-1.5 bg-rose-600/20 text-rose-300 border border-rose-500/30 hover:bg-rose-600/30 transition-all cursor-pointer"
+                  title="Limpar todos os votos e revotar esta tarefa"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Limpar Votos</span>
+                </button>
               )}
-            </button>
+              <button
+                onClick={handleToggleReveal}
+                className={`px-3 py-1.5 rounded-xl font-medium text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+                  votesRevealed
+                    ? 'bg-amber-600/20 text-amber-300 border border-amber-500/30 hover:bg-amber-600/30'
+                    : 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-md shadow-indigo-600/20'
+                }`}
+              >
+                {votesRevealed ? (
+                  <>
+                    <EyeOff className="w-3.5 h-3.5" />
+                    <span>Ocultar Notas</span>
+                  </>
+                ) : (
+                  <>
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>Revelar Notas</span>
+                  </>
+                )}
+              </button>
+            </div>
           )}
         </div>
 
@@ -284,15 +302,25 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
                     })}
                 </div>
 
-                {currentIndex < room.tasks.length - 1 && (
+                <div className="mt-3.5 flex items-center justify-center gap-2.5 flex-wrap">
                   <button
-                    onClick={handleNextTask}
-                    className="mt-3.5 inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 font-medium cursor-pointer"
+                    onClick={handleResetVotes}
+                    className="inline-flex items-center gap-1.5 text-xs text-rose-400 hover:text-rose-300 font-medium cursor-pointer px-3 py-1.5 bg-rose-950/40 hover:bg-rose-950/70 border border-rose-500/30 rounded-xl transition-colors"
                   >
-                    <span>Ir para próxima tarefa</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>Limpar votos e revotar</span>
                   </button>
-                )}
+
+                  {currentIndex < room.tasks.length - 1 && (
+                    <button
+                      onClick={handleNextTask}
+                      className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 font-medium cursor-pointer px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700/80 rounded-xl transition-colors"
+                    >
+                      <span>Ir para próxima tarefa</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           </div>

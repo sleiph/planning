@@ -3,7 +3,7 @@ import { socket } from '../socket';
 import ParticipantList from './ParticipantList';
 import VotingArea from './VotingArea';
 import OrganizerModal from './OrganizerModal';
-import { Copy, Check, Settings, LogOut, Crown, Eye, EyeOff } from 'lucide-react';
+import { Copy, Check, Settings, LogOut, Crown, Eye, EyeOff, RotateCcw } from 'lucide-react';
 
 export default function Room({ roomId, userName, isOrganizer, onLeave }) {
   const [room, setRoom] = useState(null);
@@ -38,6 +38,11 @@ export default function Room({ roomId, userName, isOrganizer, onLeave }) {
   const handleToggleReveal = () => {
     if (!room) return;
     socket.emit('reveal-votes', { roomId, revealed: !room.votesRevealed });
+  };
+
+  const handleResetVotes = () => {
+    if (!room || !room.currentTaskId) return;
+    socket.emit('reset-task-votes', { roomId, taskId: room.currentTaskId });
   };
 
   if (loading || !room) {
@@ -103,27 +108,39 @@ export default function Room({ roomId, userName, isOrganizer, onLeave }) {
           
           {/* Organizer Reveal / Hide Button */}
           {userIsOrganizer && room.currentTaskId && (
-            <button
-              onClick={handleToggleReveal}
-              className={`px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl font-medium text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
-                room.votesRevealed
-                  ? 'bg-amber-600/20 text-amber-300 border border-amber-500/30 hover:bg-amber-600/30'
-                  : 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-md shadow-indigo-600/20'
-              }`}
-              title={room.votesRevealed ? 'Ocultar Notas' : 'Revelar Notas'}
-            >
-              {room.votesRevealed ? (
-                <>
-                  <EyeOff className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span className="hidden sm:inline">Ocultar</span>
-                </>
-              ) : (
-                <>
-                  <Eye className="w-4 h-4 text-white shrink-0" />
-                  <span className="hidden sm:inline">Revelar</span>
-                </>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              {room.votesRevealed && (
+                <button
+                  onClick={handleResetVotes}
+                  className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl font-medium text-xs flex items-center gap-1.5 bg-rose-600/20 text-rose-300 border border-rose-500/30 hover:bg-rose-600/30 transition-all cursor-pointer"
+                  title="Limpar todos os votos e revotar tarefa"
+                >
+                  <RotateCcw className="w-4 h-4 text-rose-400 shrink-0" />
+                  <span className="hidden sm:inline">Revotar</span>
+                </button>
               )}
-            </button>
+              <button
+                onClick={handleToggleReveal}
+                className={`px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl font-medium text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+                  room.votesRevealed
+                    ? 'bg-amber-600/20 text-amber-300 border border-amber-500/30 hover:bg-amber-600/30'
+                    : 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-md shadow-indigo-600/20'
+                }`}
+                title={room.votesRevealed ? 'Ocultar Notas' : 'Revelar Notas'}
+              >
+                {room.votesRevealed ? (
+                  <>
+                    <EyeOff className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span className="hidden sm:inline">Ocultar</span>
+                  </>
+                ) : (
+                  <>
+                    <Eye className="w-4 h-4 text-white shrink-0" />
+                    <span className="hidden sm:inline">Revelar</span>
+                  </>
+                )}
+              </button>
+            </div>
           )}
 
           {/* Share room link */}

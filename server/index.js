@@ -245,6 +245,27 @@ io.on('connection', (socket) => {
     io.to(roomId).emit('room-update', sanitizeRoom(room));
   });
 
+  socket.on('reset-task-votes', ({ roomId, taskId }) => {
+    const room = rooms.get(roomId);
+    if (!room) return;
+
+    const tId = taskId || room.currentTaskId;
+    if (!tId) return;
+
+    if (room.votes[tId]) {
+      room.votes[tId] = {};
+    }
+    room.votesRevealed = false;
+
+    const t = room.tasks.find(x => x.id === tId);
+    if (t) {
+      t.status = 'voting';
+      t.finalScore = null;
+    }
+
+    io.to(roomId).emit('room-update', sanitizeRoom(room));
+  });
+
   socket.on('set-final-score', ({ roomId, taskId, score }) => {
     const room = rooms.get(roomId);
     if (!room) return;

@@ -51,9 +51,7 @@ npm run start:prod
 
 ## Fazer
 
-- [ ] Apagar as notas de todos e ocultar, pra revotar a tarefa
 - [ ] Persistir as notas quando fechar a votação, idependente se o usuário saiu ou continua na página
-- [ ] Corrigir responsividade
 - [ ] Feedback visual quando card é escolhido
 - [ ] Adicionar nome da sala no título da página
 - [ ] Tirar todo esse texto de IA

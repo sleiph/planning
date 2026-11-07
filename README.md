@@ -51,6 +51,7 @@ npm run start:prod
 
 ## Fazer
 
+- [ ] Travar mudanças quando as notas foram reveladas
 - [ ] Persistir as notas quando fechar a votação, idependente se o usuário saiu ou continua na página
 - [ ] Feedback visual quando card é escolhido
 - [ ] Adicionar nome da sala no título da página

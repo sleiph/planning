@@ -125,7 +125,7 @@ io.on('connection', (socket) => {
       room.organizerName = userName;
     }
 
-    io.to(roomId).emit('room-update', sanitizeRoom(room));
+    broadcastRoomUpdate(roomId);
   });
 
   // Update Room Settings (Card deck, room name)
@@ -136,7 +136,7 @@ io.on('connection', (socket) => {
     if (cardDeck) room.cardDeck = cardDeck;
     if (roomName) room.name = roomName;
 
-    io.to(roomId).emit('room-update', sanitizeRoom(room));
+    broadcastRoomUpdate(roomId);
   });
 
   // Task Management
@@ -160,7 +160,7 @@ io.on('connection', (socket) => {
       newTask.status = 'voting';
     }
 
-    io.to(roomId).emit('room-update', sanitizeRoom(room));
+    broadcastRoomUpdate(roomId);
   });
 
   socket.on('update-task', ({ roomId, taskId, task }) => {
@@ -175,7 +175,7 @@ io.on('connection', (socket) => {
       if (task.finalScore !== undefined) t.finalScore = task.finalScore;
     }
 
-    io.to(roomId).emit('room-update', sanitizeRoom(room));
+    broadcastRoomUpdate(roomId);
   });
 
   socket.on('delete-task', ({ roomId, taskId }) => {
@@ -192,7 +192,7 @@ io.on('connection', (socket) => {
       delete room.votes[taskId];
     }
 
-    io.to(roomId).emit('room-update', sanitizeRoom(room));
+    broadcastRoomUpdate(roomId);
   });
 
   socket.on('set-current-task', ({ roomId, taskId }) => {
@@ -208,7 +208,7 @@ io.on('connection', (socket) => {
       }
     });
 
-    io.to(roomId).emit('room-update', sanitizeRoom(room));
+    broadcastRoomUpdate(roomId);
   });
 
   // Voting
@@ -222,7 +222,7 @@ io.on('connection', (socket) => {
 
     room.votes[taskId][socket.id] = vote;
 
-    io.to(roomId).emit('room-update', sanitizeRoom(room));
+    broadcastRoomUpdate(roomId);
   });
 
   socket.on('clear-vote', ({ roomId, taskId }) => {
@@ -233,7 +233,7 @@ io.on('connection', (socket) => {
       delete room.votes[taskId][socket.id];
     }
 
-    io.to(roomId).emit('room-update', sanitizeRoom(room));
+    broadcastRoomUpdate(roomId);
   });
 
   socket.on('reveal-votes', ({ roomId, revealed }) => {
@@ -242,7 +242,7 @@ io.on('connection', (socket) => {
 
     room.votesRevealed = revealed;
 
-    io.to(roomId).emit('room-update', sanitizeRoom(room));
+    broadcastRoomUpdate(roomId);
   });
 
   socket.on('reset-task-votes', ({ roomId, taskId }) => {
@@ -263,7 +263,7 @@ io.on('connection', (socket) => {
       t.finalScore = null;
     }
 
-    io.to(roomId).emit('room-update', sanitizeRoom(room));
+    broadcastRoomUpdate(roomId);
   });
 
   socket.on('set-final-score', ({ roomId, taskId, score }) => {
@@ -276,7 +276,7 @@ io.on('connection', (socket) => {
       t.status = 'completed';
     }
 
-    io.to(roomId).emit('room-update', sanitizeRoom(room));
+    broadcastRoomUpdate(roomId);
   });
 
   // Disconnect
@@ -286,24 +286,26 @@ io.on('connection', (socket) => {
     if (roomId && rooms.has(roomId)) {
       const room = rooms.get(roomId);
       delete room.users[socket.id];
-      io.to(roomId).emit('room-update', sanitizeRoom(room));
+      broadcastRoomUpdate(roomId);
     }
   });
 });
 
 /**
  * Helper function to send room state to clients
- * If votes are NOT revealed, hide the actual vote values so players don't see others' votes
+ * If votes are NOT revealed, hide the actual vote values for other players so players don't see others' votes,
+ * but keep the user's own vote value for targetSocketId so they know what card they selected.
  * @param {*} room sala alvo
+ * @param {string|null} targetSocketId ID do socket destinatário
  * @returns objeto com a sala e os votos sanitizados
  */
-function sanitizeRoom(room) {
+function sanitizeRoom(room, targetSocketId = null) {
   const sanitizedVotes = {};
   
   for (const taskId in room.votes) {
     sanitizedVotes[taskId] = {};
     for (const socketId in room.votes[taskId]) {
-      if (room.votesRevealed) {
+      if (room.votesRevealed || socketId === targetSocketId) {
         sanitizedVotes[taskId][socketId] = room.votes[taskId][socketId];
       } else {
         // Only indicate that the user has voted (true), hide value
@@ -315,9 +317,26 @@ function sanitizeRoom(room) {
   return {
     ...room,
     votes: sanitizedVotes,
-    // Include raw vote values only for current user on client side if needed,
-    // but sanitizedVotes handles hidden vs revealed values cleanly.
   };
+}
+
+/**
+ * Broadcast sanitized room state to each connected client socket in the room
+ * @param {string} roomId ID da sala
+ */
+function broadcastRoomUpdate(roomId) {
+  const room = rooms.get(roomId);
+  if (!room) return;
+
+  const roomSockets = io.sockets.adapter.rooms.get(roomId);
+  if (roomSockets) {
+    for (const socketId of roomSockets) {
+      const clientSocket = io.sockets.sockets.get(socketId);
+      if (clientSocket) {
+        clientSocket.emit('room-update', sanitizeRoom(room, socketId));
+      }
+    }
+  }
 }
 
 const PORT = process.env.PORT || 4000;

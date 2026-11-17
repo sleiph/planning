@@ -9,7 +9,7 @@ import {
   ArrowLeft,
   Trash2,
   Settings,
-  Sparkles,
+  PlayingCardsFan,
   RotateCcw
 } from 'lucide-react';
 
@@ -20,7 +20,6 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
   const votesRevealed = room.votesRevealed;
   const isOrganizer = room.users && room.users[currentUserId]?.isOrganizer;
 
-  // My vote
   const myVote = currentVotes[currentUserId];
 
   const handleCastVote = (voteValue) => {
@@ -69,11 +68,11 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
   const calculateStats = () => {
     if (!votesRevealed) return null;
     const values = Object.values(currentVotes).filter(
-      (v) => typeof v === 'string' && !isNaN(v) && v !== '?' && v !== '☕'
+      (v) => (typeof v === 'string' || typeof v === 'number') && !isNaN(v) && v !== '?' && v !== '☕'
     );
     if (values.length === 0) return null;
     const sum = values.reduce((acc, val) => acc + Number(val), 0);
-    return (sum / values.length).toFixed(1);
+    return Math.round(sum / values.length);
   };
 
   const averageScore = calculateStats();
@@ -266,7 +265,7 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
           <div className="mt-6 pt-5 border-t border-slate-800 space-y-4">
             {averageScore !== null && (
               <div className="flex items-center justify-center gap-3 bg-slate-950/50 rounded-xl p-3 border border-slate-800/80">
-                <Sparkles className="w-4 h-4 text-indigo-400" />
+                <PlayingCardsFan className="w-4 h-4 text-indigo-400" />
                 <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                   Média de Esforço:
                 </span>
@@ -347,19 +346,24 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
         <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
           {room.cardDeck &&
             room.cardDeck.map((card, idx) => {
-              const isSelected = myVote === card;
+              const isSelected = myVote !== undefined && myVote !== true && String(myVote) === String(card);
 
               return (
                 <button
                   key={idx}
                   onClick={() => handleCastVote(card)}
-                  className={`w-12 h-16 xs:w-14 xs:h-20 sm:w-16 sm:h-24 rounded-xl sm:rounded-2xl font-mono text-lg xs:text-xl sm:text-2xl font-bold flex items-center justify-center transition-all cursor-pointer shadow-md ${
+                  className={`w-12 h-16 xs:w-14 xs:h-20 sm:w-16 sm:h-24 rounded-xl sm:rounded-2xl font-mono text-lg xs:text-xl sm:text-2xl font-bold flex items-center justify-center transition-all cursor-pointer shadow-md relative ${
                     isSelected
-                      ? 'bg-indigo-600 text-white -translate-y-1.5 ring-2 sm:ring-4 ring-indigo-500/40 border border-indigo-400'
+                      ? 'bg-indigo-600 text-white -translate-y-2.5 ring-4 ring-indigo-500/50 border-2 border-emerald-400 shadow-xl shadow-indigo-500/40 scale-105'
                       : 'bg-slate-950 hover:bg-slate-800 text-slate-200 border border-slate-700 hover:border-indigo-500/50 hover:-translate-y-1'
                   }`}
                 >
-                  {card}
+                  {isSelected && (
+                    <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-emerald-500 text-slate-950 rounded-full flex items-center justify-center shadow-md">
+                      <CheckCircle2 className="w-3.5 h-3.5 stroke-[3]" />
+                    </span>
+                  )}
+                  <span>{card}</span>
                 </button>
               );
             })}

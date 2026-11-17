@@ -51,11 +51,20 @@ npm run start:prod
 
 ## Fazer
 
-- [ ] Travar mudanças quando as notas foram reveladas
-- [ ] Persistir as notas quando fechar a votação, idependente se o usuário saiu ou continua na página
-- [ ] Feedback visual quando card é escolhido
-- [ ] Adicionar nome da sala no título da página
+- [x] Feedback visual quando card é escolhido
 - [ ] Tirar todo esse texto de IA
+- [ ] Adicionar nome da sala no título da página
+- [ ] Travar mudanças quando as notas foram reveladas
+- [ ] Persistir as notas quando fechar a votação, independente se o usuário saiu ou continua na página
 - [ ] Usar um banco de dados e criar logins persistidos
-- [ ] Passar o servidor pra um projeto próprio?
+- [ ] Poder reordenar tarefas no planning
+- [ ] Organizador poder remover participantes
+- [x] Arredondar a soma dos esforços
+- [ ] Melhorar o design, de feio ja basta o basileia
+- [ ] Modo claro
+- [ ] Adicionar licença de uso e alteração livre
+
+### Fazer?
+
 - [ ] Revelar automaticamente as notas quando todos tiverem votado?
+- [ ] Passar o servidor pra um projeto próprio?

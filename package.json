@@ -2,6 +2,7 @@
   "name": "planning-poker-app",
   "version": "1.0.0",
   "description": "Planning Poker web application for sprint estimation",
+  "license": "Unlicense",
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",

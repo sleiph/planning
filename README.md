@@ -62,7 +62,7 @@ npm run start:prod
 - [x] Arredondar a soma dos esforços
 - [ ] Melhorar o design, de feio ja basta o basileia
 - [ ] Modo claro
-- [ ] Adicionar licença de uso e alteração livre
+- [x] Adicionar licença de uso e alteração livre (The Unlicense)
 
 ### Fazer?
 

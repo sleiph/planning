@@ -28,6 +28,15 @@ export default function Room({ roomId, userName, isOrganizer, onLeave }) {
     };
   }, [roomId, userName, isOrganizer]);
 
+  useEffect(() => {
+    if (room?.name) {
+      document.title = `${room.name} - Planning | Scrum Poker`;
+    }
+    return () => {
+      document.title = 'Planning | Scrum Poker';
+    };
+  }, [room?.name]);
+
   const handleCopyLink = () => {
     const link = window.location.href;
     navigator.clipboard.writeText(link);

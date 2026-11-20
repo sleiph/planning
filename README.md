@@ -53,7 +53,7 @@ npm run start:prod
 
 - [x] Feedback visual quando card é escolhido
 - [ ] Tirar todo esse texto de IA
-- [ ] Adicionar nome da sala no título da página
+- [x] Adicionar nome da sala no título da página
 - [ ] Travar mudanças quando as notas foram reveladas
 - [ ] Persistir as notas quando fechar a votação, independente se o usuário saiu ou continua na página
 - [ ] Usar um banco de dados e criar logins persistidos

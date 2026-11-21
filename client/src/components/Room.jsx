@@ -59,7 +59,7 @@ export default function Room({ roomId, userName, isOrganizer, onLeave }) {
     return (
       <div className="min-h-screen bg-theme-page flex items-center justify-center text-theme-muted">
         <div className="text-center">
-          <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+          <div className="w-10 h-10 border-4 border-amber-500 dark:border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
           <p>Entrando na sala...</p>
         </div>
       </div>
@@ -108,7 +108,7 @@ export default function Room({ roomId, userName, isOrganizer, onLeave }) {
 
             <p className="text-[11px] sm:text-xs text-theme-muted flex items-center gap-1 truncate">
               <span>Sala:</span>
-              <code className="text-indigo-600 dark:text-indigo-400 font-mono font-medium">{room.id}</code>
+              <code className="text-amber-600 dark:text-indigo-400 font-mono font-medium">{room.id}</code>
             </p>
           </div>
         </div>
@@ -129,7 +129,7 @@ export default function Room({ roomId, userName, isOrganizer, onLeave }) {
               </>
             ) : (
               <>
-                <Copy className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
+                <Copy className="w-4 h-4 text-amber-600 dark:text-indigo-400 shrink-0" />
                 <span className="hidden md:inline">Copiar Link</span>
               </>
             )}
@@ -139,17 +139,18 @@ export default function Room({ roomId, userName, isOrganizer, onLeave }) {
           {userIsOrganizer && (
             <button
               onClick={() => setIsSettingsOpen(true)}
-              className="p-2 sm:px-3 sm:py-2 bg-theme-elevated hover:bg-theme-elevated-hover text-theme-main text-xs font-medium rounded-xl border border-theme-border-subtle hover:border-indigo-500/50 transition-colors flex items-center gap-1.5 cursor-pointer shrink-0 relative"
+              className="p-2 sm:px-3 sm:py-2 bg-theme-elevated hover:bg-theme-elevated-hover text-theme-main text-xs font-medium rounded-xl border border-theme-border-subtle hover:border-amber-500/50 dark:hover:border-indigo-500/50 transition-colors flex items-center gap-1.5 cursor-pointer shrink-0 relative"
               title="Configurações e Tarefas"
             >
-              <Settings className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
+              <Settings className="w-4 h-4 text-amber-600 dark:text-indigo-400 shrink-0" />
               <span className="hidden md:inline">Configurações</span>
               {room.tasks && room.tasks.length > 0 && (
-                <span className="md:hidden absolute top-1 right-1 w-2 h-2 bg-indigo-500 rounded-full"></span>
+                <span className="md:hidden absolute top-1 right-1 w-2 h-2 bg-amber-500 dark:bg-indigo-500 rounded-full"></span>
               )}
             </button>
           )}
 
+          {/* tema */}
           <ThemeToggle />
 
         </div>

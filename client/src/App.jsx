@@ -76,19 +76,19 @@ export default function App() {
         </div>
         <div className="max-w-md w-full bg-theme-card border border-theme-border rounded-2xl shadow-2xl p-8 text-theme-main text-center">
           <h2 className="text-2xl font-bold text-theme-heading mb-2">Entrar na Sala</h2>
-          <p className="text-sm text-theme-muted mb-6">Informe seu nome para participar da votação na sala <code className="text-indigo-600 dark:text-indigo-400 font-semibold">{roomId}</code>.</p>
+          <p className="text-sm text-theme-muted mb-6">Informe seu nome para participar da votação na sala <code className="text-amber-600 dark:text-indigo-400 font-semibold">{roomId}</code>.</p>
           <form onSubmit={handleSubmitName} className="space-y-4">
             <input
               type="text"
               placeholder="Seu Nome"
               value={inputName}
               onChange={(e) => setInputName(e.target.value)}
-              className="w-full bg-theme-input border border-theme-input-border rounded-xl px-4 py-3 text-theme-main placeholder-theme-faint focus:outline-none focus:border-indigo-500"
+              className="w-full bg-theme-input border border-theme-input-border rounded-xl px-4 py-3 text-theme-main placeholder-theme-faint focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500"
               autoFocus
             />
             <button
               type="submit"
-              className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl shadow-lg transition-all cursor-pointer"
+              className="w-full py-3 px-4 bg-amber-600 hover:bg-amber-500 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-medium rounded-xl shadow-lg transition-all cursor-pointer"
             >
               Entrar na Sala
             </button>

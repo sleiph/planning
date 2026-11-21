@@ -117,7 +117,7 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
         {/* header do Modal */}
         <div className="px-5 py-4 border-b border-theme-border flex items-center justify-between shrink-0 bg-theme-card">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-500/30">
+            <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-600 dark:text-indigo-400 flex items-center justify-center border border-amber-500/30 dark:border-indigo-500/30">
               <SlidersHorizontal className="w-4 h-4" />
             </div>
             <div>
@@ -140,7 +140,7 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
             onClick={() => setActiveTab('tasks')}
             className={`pb-2.5 px-3 text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-all cursor-pointer border-b-2 ${
               activeTab === 'tasks'
-                ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
+                ? 'border-amber-500 text-amber-600 dark:text-indigo-400'
                 : 'border-transparent text-theme-muted hover:text-theme-main'
             }`}
           >
@@ -157,7 +157,7 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
             onClick={() => setActiveTab('settings')}
             className={`pb-2.5 px-3 text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-all cursor-pointer border-b-2 ${
               activeTab === 'settings'
-                ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
+                ? 'border-amber-500 text-amber-600 dark:text-indigo-400'
                 : 'border-transparent text-theme-muted hover:text-theme-main'
             }`}
           >
@@ -173,7 +173,7 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
               
               {/* form de add tarefa */}
               <div className="bg-theme-item border border-theme-border rounded-xl p-4">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-3 flex items-center gap-1.5">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-indigo-400 mb-3 flex items-center gap-1.5">
                   <Plus className="w-3.5 h-3.5" />
                   Nova Tarefa para Estimativa
                 </h3>
@@ -184,19 +184,19 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
                       placeholder="Título da Tarefa (ex: Autenticação OAuth)"
                       value={taskTitle}
                       onChange={(e) => setTaskTitle(e.target.value)}
-                      className="w-full bg-theme-input border border-theme-input-border rounded-xl px-3.5 py-2.5 text-theme-main placeholder-theme-faint focus:outline-none focus:border-indigo-500 text-sm"
+                      className="w-full bg-theme-input border border-theme-input-border rounded-xl px-3.5 py-2.5 text-theme-main placeholder-theme-faint focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500 text-sm"
                     />
                     <input
                       type="text"
                       placeholder="Descrição ou critérios de aceite (opcional)"
                       value={taskDesc}
                       onChange={(e) => setTaskDesc(e.target.value)}
-                      className="w-full bg-theme-input border border-theme-input-border rounded-xl px-3.5 py-2 text-theme-main placeholder-theme-faint focus:outline-none focus:border-indigo-500 text-sm"
+                      className="w-full bg-theme-input border border-theme-input-border rounded-xl px-3.5 py-2 text-theme-main placeholder-theme-faint focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500 text-sm"
                     />
                   </div>
                   <button
                     type="submit"
-                    className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer text-sm shadow-md shadow-indigo-600/20"
+                    className="w-full py-2.5 bg-amber-600 hover:bg-amber-500 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-medium rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer text-sm shadow-md shadow-amber-600/20 dark:shadow-indigo-600/20"
                   >
                     <Plus className="w-4 h-4" />
                     Adicionar Tarefa
@@ -243,14 +243,14 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
                               type="text"
                               value={editTitle}
                               onChange={(e) => setEditTitle(e.target.value)}
-                              className="w-full bg-theme-input border border-theme-input-border rounded-xl px-3 py-2 text-theme-main text-sm focus:outline-none focus:border-indigo-500"
+                              className="w-full bg-theme-input border border-theme-input-border rounded-xl px-3 py-2 text-theme-main text-sm focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500"
                             />
                             <input
                               type="text"
                               value={editDesc}
                               onChange={(e) => setEditDesc(e.target.value)}
                               placeholder="Descrição (opcional)"
-                              className="w-full bg-theme-input border border-theme-input-border rounded-xl px-3 py-2 text-theme-main text-sm focus:outline-none focus:border-indigo-500"
+                              className="w-full bg-theme-input border border-theme-input-border rounded-xl px-3 py-2 text-theme-main text-sm focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500"
                             />
                             <div className="flex gap-2">
                               <button
@@ -275,7 +275,7 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
                                   {task.title}
                                 </h4>
                                 {isCurrent && (
-                                  <span className="px-2 py-0.5 bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 text-[10px] font-bold uppercase tracking-wider rounded-md">
+                                  <span className="px-2 py-0.5 bg-amber-500/20 text-amber-600 dark:text-indigo-400 border border-amber-500/30 dark:border-indigo-500/30 text-[10px] font-bold uppercase tracking-wider rounded-md">
                                     Em Votação
                                   </span>
                                 )}
@@ -296,14 +296,14 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
                               {!isCurrent ? (
                                 <button
                                   onClick={() => handleStartVoting(task.id)}
-                                  className="px-2.5 py-1.5 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-600 dark:text-indigo-300 hover:text-white rounded-lg transition-colors cursor-pointer text-xs flex items-center gap-1 font-medium"
+                                  className="px-2.5 py-1.5 bg-amber-600/20 hover:bg-amber-600 dark:bg-indigo-600/20 dark:hover:bg-indigo-600 text-amber-600 dark:text-indigo-300 hover:text-white rounded-lg transition-colors cursor-pointer text-xs flex items-center gap-1 font-medium"
                                   title="Iniciar Votação nesta Tarefa"
                                 >
                                   <Play className="w-3.5 h-3.5" />
                                   <span className="hidden xs:inline">Votar</span>
                                 </button>
                               ) : (
-                                <span className="text-[11px] text-indigo-600 dark:text-indigo-400 font-medium px-2 py-1 bg-indigo-500/10 rounded-lg">
+                                <span className="text-[11px] text-amber-600 dark:text-indigo-400 font-medium px-2 py-1 bg-amber-500/10 dark:bg-indigo-500/10 rounded-lg">
                                   Ativa
                                 </span>
                               )}
@@ -359,12 +359,12 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
                     type="text"
                     value={roomName}
                     onChange={(e) => setRoomName(e.target.value)}
-                    className="flex-1 bg-theme-input border border-theme-input-border rounded-xl px-3.5 py-2 text-theme-main focus:outline-none focus:border-indigo-500 text-sm"
+                    className="flex-1 bg-theme-input border border-theme-input-border rounded-xl px-3.5 py-2 text-theme-main focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500 text-sm"
                     placeholder="Ex: Sprint 15 Planning"
                   />
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl transition-colors cursor-pointer text-xs shrink-0"
+                    className="px-4 py-2 bg-amber-600 hover:bg-amber-500 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-medium rounded-xl transition-colors cursor-pointer text-xs shrink-0"
                   >
                     {nameSaved ? 'Salvo!' : 'Salvar'}
                   </button>
@@ -380,7 +380,7 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
                   <button
                     type="button"
                     onClick={handleResetDeck}
-                    className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 cursor-pointer"
+                    className="text-xs text-amber-600 dark:text-indigo-400 hover:underline flex items-center gap-1 cursor-pointer"
                   >
                     <RotateCcw className="w-3 h-3" />
                     Restaurar Padrão
@@ -413,7 +413,7 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
                     value={newCardValue}
                     onChange={(e) => setNewCardValue(e.target.value)}
                     placeholder="Nova carta (ex: 8, 13, XS, XL)"
-                    className="flex-1 bg-theme-input border border-theme-input-border rounded-xl px-3.5 py-2 text-theme-main focus:outline-none focus:border-indigo-500 text-sm"
+                    className="flex-1 bg-theme-input border border-theme-input-border rounded-xl px-3.5 py-2 text-theme-main focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500 text-sm"
                   />
                   <button
                     type="submit"
@@ -432,7 +432,7 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
         <div className="px-5 py-3.5 border-t border-theme-border flex justify-end shrink-0 bg-theme-card">
           <button
             onClick={onClose}
-            className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl transition-colors cursor-pointer text-xs sm:text-sm shadow-md"
+            className="px-5 py-2 bg-amber-600 hover:bg-amber-500 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-medium rounded-xl transition-colors cursor-pointer text-xs sm:text-sm shadow-md"
           >
             Concluído
           </button>

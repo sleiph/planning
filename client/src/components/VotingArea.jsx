@@ -81,7 +81,7 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
   if (!currentTask) {
     return (
       <div className="bg-theme-card border border-theme-border rounded-2xl p-8 sm:p-12 text-center shadow-xl">
-        <Award className="w-12 h-12 text-indigo-600 dark:text-indigo-400 mx-auto mb-4 opacity-60" />
+        <Award className="w-12 h-12 text-amber-600 dark:text-indigo-400 mx-auto mb-4 opacity-60" />
         <h3 className="text-xl font-bold text-theme-heading mb-2">Nenhuma tarefa em votação</h3>
         <p className="text-sm text-theme-muted max-w-md mx-auto mb-6">
           {isOrganizer
@@ -91,7 +91,7 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
         {isOrganizer && (
           <button
             onClick={onOpenSettings}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-indigo-600/20 transition-all cursor-pointer text-sm"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-600 hover:bg-amber-500 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-amber-600/20 dark:shadow-indigo-600/20 transition-all cursor-pointer text-sm"
           >
             <Settings className="w-4 h-4" />
             Configurar Tarefas & Baralho
@@ -110,7 +110,7 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
         {/* status da tarefa atual */}
         <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-2.5 py-1 bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-500/30 text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-lg">
+            <span className="px-2.5 py-1 bg-amber-500/20 text-amber-700 dark:text-indigo-300 border border-amber-500/30 dark:border-indigo-500/30 text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-lg">
               Em Votação
             </span>
             {room.tasks && room.tasks.length > 0 && (
@@ -140,7 +140,7 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
               <select
                 value={currentTaskId}
                 onChange={(e) => socket.emit('set-current-task', { roomId, taskId: e.target.value })}
-                className="bg-theme-elevated border border-theme-border-subtle text-theme-main text-xs rounded-lg px-2 py-1.5 focus:outline-none focus:border-indigo-500 max-w-[130px] sm:max-w-[180px] truncate cursor-pointer"
+                className="bg-theme-elevated border border-theme-border-subtle text-theme-main text-xs rounded-lg px-2 py-1.5 focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500 max-w-[130px] sm:max-w-[180px] truncate cursor-pointer"
               >
                 {room.tasks.map((t, i) => (
                   <option key={t.id} value={t.id}>
@@ -197,7 +197,7 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
                 className={`px-3 py-1.5 rounded-xl font-medium text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
                   votesRevealed
                     ? 'bg-amber-500/10 dark:bg-amber-600/20 text-amber-700 dark:text-amber-300 border border-amber-500/30 hover:bg-amber-500/20'
-                    : 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-md shadow-indigo-600/20'
+                    : 'bg-amber-600 hover:bg-amber-500 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white shadow-md shadow-amber-600/20 dark:shadow-indigo-600/20'
                 }`}
               >
                 {votesRevealed ? (
@@ -242,11 +242,11 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
                 {/* Card visual */}
                 {hasVoted ? (
                   votesRevealed ? (
-                    <div className="w-12 h-16 sm:w-14 sm:h-20 bg-indigo-600 text-white font-bold text-lg sm:text-xl rounded-xl flex items-center justify-center shadow-lg border border-indigo-400">
+                    <div className="w-12 h-16 sm:w-14 sm:h-20 bg-amber-600 dark:bg-indigo-600 text-white font-bold text-lg sm:text-xl rounded-xl flex items-center justify-center shadow-lg border border-amber-400 dark:border-indigo-400">
                       {voteVal}
                     </div>
                   ) : (
-                    <div className="w-12 h-16 sm:w-14 sm:h-20 bg-[var(--indigo-subtle-bg)] text-indigo-600 dark:text-indigo-400 border border-[var(--indigo-subtle-border)] rounded-xl flex items-center justify-center shadow-xs">
+                    <div className="w-12 h-16 sm:w-14 sm:h-20 bg-[var(--indigo-subtle-bg)] text-amber-600 dark:text-indigo-400 border border-[var(--indigo-subtle-border)] rounded-xl flex items-center justify-center shadow-xs">
                       <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500 dark:text-emerald-400" />
                     </div>
                   )
@@ -265,11 +265,11 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
           <div className="mt-6 pt-5 border-t border-theme-border space-y-4">
             {averageScore !== null && (
               <div className="flex items-center justify-center gap-3 bg-theme-item rounded-xl p-3 border border-theme-border">
-                <PlayingCardsFan className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                <PlayingCardsFan className="w-4 h-4 text-amber-600 dark:text-indigo-400" />
                 <span className="text-xs font-semibold uppercase tracking-wider text-theme-muted">
                   Média de Esforço:
                 </span>
-                <span className="text-2xl font-bold font-mono text-indigo-600 dark:text-indigo-400">
+                <span className="text-2xl font-bold font-mono text-amber-600 dark:text-indigo-400">
                   {averageScore}
                 </span>
               </div>
@@ -278,7 +278,7 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
             {/* Seletor de score final do organizador */}
             {isOrganizer && (
               <div className="bg-[var(--indigo-subtle-bg)] border border-[var(--indigo-subtle-border)] rounded-xl p-3 sm:p-4 text-center">
-                <div className="text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-300 mb-2.5">
+                <div className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-indigo-300 mb-2.5">
                   Definir Pontuação Final da Tarefa
                 </div>
                 <div className="flex flex-wrap items-center justify-center gap-2">
@@ -292,7 +292,7 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
                           className={`px-3 py-1.5 rounded-xl font-mono text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                             isFinalSelected
                               ? 'bg-emerald-600 text-white shadow-lg ring-2 ring-emerald-400'
-                              : 'bg-theme-card hover:bg-theme-elevated text-theme-main border border-theme-border-subtle hover:border-indigo-500/50'
+                              : 'bg-theme-card hover:bg-theme-elevated text-theme-main border border-theme-border-subtle hover:border-amber-500/50 dark:hover:border-indigo-500/50'
                           }`}
                         >
                           {score}
@@ -313,7 +313,7 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
                   {currentIndex < room.tasks.length - 1 && (
                     <button
                       onClick={handleNextTask}
-                      className="inline-flex items-center gap-1.5 text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 font-medium cursor-pointer px-3 py-1.5 bg-theme-elevated hover:bg-theme-elevated-hover border border-theme-border-subtle rounded-xl transition-colors"
+                      className="inline-flex items-center gap-1.5 text-xs text-amber-600 dark:text-indigo-400 hover:text-amber-500 dark:hover:text-indigo-500 font-medium cursor-pointer px-3 py-1.5 bg-theme-elevated hover:bg-theme-elevated-hover border border-theme-border-subtle rounded-xl transition-colors"
                     >
                       <span>Ir para próxima tarefa</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -354,8 +354,8 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
                   onClick={() => handleCastVote(card)}
                   className={`w-12 h-16 xs:w-14 xs:h-20 sm:w-16 sm:h-24 rounded-xl sm:rounded-2xl font-mono text-lg xs:text-xl sm:text-2xl font-bold flex items-center justify-center transition-all cursor-pointer shadow-md relative ${
                     isSelected
-                      ? 'bg-indigo-600 text-white -translate-y-2.5 border-2 shadow-xl shadow-indigo-500/40 scale-105'
-                      : 'bg-theme-item hover:bg-theme-elevated text-theme-main border border-theme-border-subtle hover:border-indigo-500/50 hover:-translate-y-1'
+                      ? 'bg-amber-600 dark:bg-indigo-600 text-white -translate-y-2.5 border-2 shadow-xl shadow-amber-500/40 dark:shadow-indigo-500/40 scale-105'
+                      : 'bg-theme-item hover:bg-theme-elevated text-theme-main border border-theme-border-subtle hover:border-amber-500/50 dark:hover:border-indigo-500/50 hover:-translate-y-1'
                   }`}
                 >
                   

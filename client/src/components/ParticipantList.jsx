@@ -12,7 +12,7 @@ export default function ParticipantList({ room, currentUserId }) {
     <div className="bg-theme-card border border-theme-border rounded-2xl p-4 shadow-lg flex flex-col h-full">
       <div className="flex items-center justify-between pb-3 mb-3 border-b border-theme-border">
         <h3 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-theme-muted flex items-center gap-2">
-          <Users className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+          <Users className="w-4 h-4 text-amber-600 dark:text-indigo-400" />
           Participantes ({users.length})
         </h3>
         {currentTaskId && (
@@ -67,7 +67,7 @@ export default function ParticipantList({ room, currentUserId }) {
                 {currentTaskId ? (
                   hasVoted ? (
                     votesRevealed ? (
-                      <span className="px-2.5 py-1 bg-indigo-600 text-white font-bold text-xs rounded-lg shadow-xs">
+                      <span className="px-2.5 py-1 bg-amber-600 dark:bg-indigo-600 text-white font-bold text-xs rounded-lg shadow-xs">
                         {voteValue}
                       </span>
                     ) : (

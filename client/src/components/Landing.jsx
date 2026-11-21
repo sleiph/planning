@@ -70,7 +70,7 @@ export default function Landing({ onRoomCreated, onRoomJoined }) {
         
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-2xl mb-4 border border-indigo-500/20">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-amber-500/10 dark:bg-indigo-500/10 text-amber-600 dark:text-indigo-400 rounded-2xl mb-4 border border-amber-500/20 dark:border-indigo-500/20">
             <PlayingCardsFan className="w-8 h-8" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-theme-heading">Planning Poker</h1>
@@ -89,7 +89,7 @@ export default function Landing({ onRoomCreated, onRoomJoined }) {
           <div className="space-y-4">
             <button
               onClick={() => setMode('create')}
-              className="w-full py-3.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 group cursor-pointer"
+              className="w-full py-3.5 px-4 bg-amber-600 hover:bg-amber-500 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-amber-600/20 dark:shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 group cursor-pointer"
             >
               <PlusCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
               Criar Nova Sala
@@ -121,7 +121,7 @@ export default function Landing({ onRoomCreated, onRoomJoined }) {
                 placeholder="Ex: Sprint 14 Planning"
                 value={roomName}
                 onChange={(e) => setRoomName(e.target.value)}
-                className="w-full bg-theme-input border border-theme-input-border rounded-xl px-4 py-3 text-theme-main placeholder-theme-faint focus:outline-none focus:border-indigo-500 transition-colors"
+                className="w-full bg-theme-input border border-theme-input-border rounded-xl px-4 py-3 text-theme-main placeholder-theme-faint focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500 transition-colors"
                 autoFocus
               />
             </div>
@@ -135,7 +135,7 @@ export default function Landing({ onRoomCreated, onRoomJoined }) {
                 placeholder="Ex: Carlos"
                 value={organizerName}
                 onChange={(e) => setOrganizerName(e.target.value)}
-                className="w-full bg-theme-input border border-theme-input-border rounded-xl px-4 py-3 text-theme-main placeholder-theme-faint focus:outline-none focus:border-indigo-500 transition-colors"
+                className="w-full bg-theme-input border border-theme-input-border rounded-xl px-4 py-3 text-theme-main placeholder-theme-faint focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500 transition-colors"
               />
             </div>
 
@@ -150,7 +150,7 @@ export default function Landing({ onRoomCreated, onRoomJoined }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-2/3 py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-indigo-600/20 transition-all cursor-pointer disabled:opacity-50"
+                className="w-2/3 py-3 px-4 bg-amber-600 hover:bg-amber-500 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-amber-600/20 dark:shadow-indigo-600/20 transition-all cursor-pointer disabled:opacity-50"
               >
                 {loading ? 'Criando...' : 'Criar Sala'}
               </button>
@@ -169,7 +169,7 @@ export default function Landing({ onRoomCreated, onRoomJoined }) {
                 placeholder="Ex: a1b2c3d4"
                 value={roomId}
                 onChange={(e) => setRoomId(e.target.value)}
-                className="w-full bg-theme-input border border-theme-input-border rounded-xl px-4 py-3 text-theme-main placeholder-theme-faint focus:outline-none focus:border-indigo-500 transition-colors uppercase font-mono"
+                className="w-full bg-theme-input border border-theme-input-border rounded-xl px-4 py-3 text-theme-main placeholder-theme-faint focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500 transition-colors uppercase font-mono"
                 autoFocus
               />
             </div>
@@ -183,7 +183,7 @@ export default function Landing({ onRoomCreated, onRoomJoined }) {
                 placeholder="Ex: Ana (Desenvolvedora)"
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
-                className="w-full bg-theme-input border border-theme-input-border rounded-xl px-4 py-3 text-theme-main placeholder-theme-faint focus:outline-none focus:border-indigo-500 transition-colors"
+                className="w-full bg-theme-input border border-theme-input-border rounded-xl px-4 py-3 text-theme-main placeholder-theme-faint focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500 transition-colors"
               />
             </div>
 
@@ -197,7 +197,7 @@ export default function Landing({ onRoomCreated, onRoomJoined }) {
               </button>
               <button
                 type="submit"
-                className="w-2/3 py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-indigo-600/20 transition-all cursor-pointer"
+                className="w-2/3 py-3 px-4 bg-amber-600 hover:bg-amber-500 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-amber-600/20 dark:shadow-indigo-600/20 transition-all cursor-pointer"
               >
                 Entrar na Sala
               </button>

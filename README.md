@@ -62,18 +62,18 @@ npm run start:prod
 - [x] Adicionar nome da sala no título da página
 - [ ] Travar mudanças quando as notas foram reveladas
 - [ ] Persistir as notas quando fechar a votação, independente se o usuário saiu ou continua na página
-- [ ] Usar um banco de dados e criar logins persistidos
-- [ ] Poder reordenar tarefas no planning
+- [ ] Poder reordenar tarefas do planning
 - [ ] Organizador poder remover participantes
 - [x] Arredondar a soma dos esforços
 - [ ] Melhorar o design, de feio ja basta o basileia
 - [x] Modo claro
 - [x] Adicionar licença de uso e alteração livre (The Unlicense)
 - [ ] Transformar o campo de descrição da tarefa em um bloco de texto maior com markdown
-- [ ] Trocar o status da tarefa de 'Em Votação' pra 'Votada' quando o organizador definir a nota final
+- [ ] Trocar o status da tarefa de 'Em Votação' pra 'Votada' depois que o organizador definir a nota final
 
 
 ### Fazer?
 
+- [ ] Usar um banco de dados e criar logins persistidos?
 - [ ] Revelar automaticamente as notas quando todos tiverem votado?
 - [ ] Passar o servidor pra um projeto separado?

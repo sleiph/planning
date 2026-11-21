@@ -330,7 +330,7 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
       <div className="bg-theme-card border border-theme-border rounded-2xl p-4 sm:p-6 shadow-xl">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-theme-muted">
-            Escolha sua Nota para a Tarefa
+            Esforço da Tarefa
           </h3>
           {myVote !== undefined && (
             <button
@@ -354,7 +354,7 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
                   onClick={() => handleCastVote(card)}
                   className={`w-12 h-16 xs:w-14 xs:h-20 sm:w-16 sm:h-24 rounded-xl sm:rounded-2xl font-mono text-lg xs:text-xl sm:text-2xl font-bold flex items-center justify-center transition-all cursor-pointer shadow-md relative ${
                     isSelected
-                      ? 'bg-indigo-600 text-white -translate-y-2.5 ring-4 ring-indigo-500/50 border-2 border-emerald-400 shadow-xl shadow-indigo-500/40 scale-105'
+                      ? 'bg-indigo-600 text-white -translate-y-2.5 border-2 shadow-xl shadow-indigo-500/40 scale-105'
                       : 'bg-theme-item hover:bg-theme-elevated text-theme-main border border-theme-border-subtle hover:border-indigo-500/50 hover:-translate-y-1'
                   }`}
                 >

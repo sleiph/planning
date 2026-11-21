@@ -57,6 +57,7 @@ npm run start:prod
 ## Corrigir
 
 - [ ] Quando troca de tarefa ele esconde as notas e remove a pontuação definida do select
+- [ ] Repetindo o participante se abrir em mais de uma aba
 
 
 ## Melhorar

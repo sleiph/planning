@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Landing from './components/Landing';
 import Room from './components/Room';
+import ThemeToggle from './components/ThemeToggle';
 
 export default function App() {
   const [roomId, setRoomId] = useState(null);
@@ -9,7 +10,7 @@ export default function App() {
   const [needsNamePrompt, setNeedsNamePrompt] = useState(false);
   const [inputName, setInputName] = useState('');
 
-  // Check URL path on mount (e.g. /room/xxxx)
+  // Checa URL on mount
   useEffect(() => {
     const path = window.location.pathname;
     const match = path.match(/^\/room\/([a-zA-Z0-9_-]+)$/);
@@ -61,7 +62,6 @@ export default function App() {
     setNeedsNamePrompt(false);
   };
 
-  // If user opened a room link directly but needs to provide name
   if (needsNamePrompt && roomId) {
     const handleSubmitName = (e) => {
       e.preventDefault();
@@ -70,17 +70,20 @@ export default function App() {
     };
 
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
-        <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-8 text-slate-100 text-center">
-          <h2 className="text-2xl font-bold mb-2">Entrar na Sala</h2>
-          <p className="text-sm text-slate-400 mb-6">Informe seu nome para participar da votação na sala <code className="text-indigo-400">{roomId}</code>.</p>
+      <div className="min-h-screen bg-theme-page flex flex-col items-center justify-center p-4 relative">
+        <div className="absolute top-4 right-4">
+          <ThemeToggle />
+        </div>
+        <div className="max-w-md w-full bg-theme-card border border-theme-border rounded-2xl shadow-2xl p-8 text-theme-main text-center">
+          <h2 className="text-2xl font-bold text-theme-heading mb-2">Entrar na Sala</h2>
+          <p className="text-sm text-theme-muted mb-6">Informe seu nome para participar da votação na sala <code className="text-indigo-600 dark:text-indigo-400 font-semibold">{roomId}</code>.</p>
           <form onSubmit={handleSubmitName} className="space-y-4">
             <input
               type="text"
               placeholder="Seu Nome"
               value={inputName}
               onChange={(e) => setInputName(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500"
+              className="w-full bg-theme-input border border-theme-input-border rounded-xl px-4 py-3 text-theme-main placeholder-theme-faint focus:outline-none focus:border-indigo-500"
               autoFocus
             />
             <button

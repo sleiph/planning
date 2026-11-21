@@ -1,6 +1,7 @@
-# Planning Poker App
+# App de Planning Poker
 
 Aplicação web em tempo real pra estimativas de esforço em equipes ágeis (Scrum / Sprints) usando Planning Poker.
+
 
 ## Funcionalidades
 
@@ -8,6 +9,7 @@ Aplicação web em tempo real pra estimativas de esforço em equipes ágeis (Scr
 - **Painel do Organizador:** Controle de tarefas, revelação de votos, reinício de votações e gerenciamento do baralho de cartas.
 - **Votação Interativa:** Participantes votam simultaneamente com feedback visual em tempo real.
 - **Lista de Participantes:** Acompanhamento dinâmico de quem está presente na sala e o status de voto de cada membro.
+
 
 ## Tecnologias
 
@@ -23,6 +25,7 @@ Aplicação web em tempo real pra estimativas de esforço em equipes ágeis (Scr
 - **Tailwind CSS** (v4)
 - **Lucide React** (Ícones)
 - **Socket.io Client**
+
 
 ## Como rodar
 
@@ -44,6 +47,7 @@ npm run build
 npm run start:prod
 ```
 
+
 ## Estrutura do Projeto
 
 - `server/` - Servidor backend (Node.js, Express e Socket.io) responsável pela lógica de salas e eventos em tempo real.
@@ -55,7 +59,7 @@ npm run start:prod
 - [ ] Quando troca de tarefa ele esconde as notas e remove a pontuação definida do select
 
 
-## Fazer
+## Melhorar
 
 - [x] Feedback visual quando card é escolhido
 - [ ] Tirar todo esse texto de IA

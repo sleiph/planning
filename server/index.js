@@ -200,13 +200,18 @@ io.on('connection', (socket) => {
     if (!room) return;
 
     room.currentTaskId = taskId;
-    room.votesRevealed = false;
 
-    room.tasks.forEach(t => {
-      if (t.id === taskId) {
-        t.status = 'voting';
+    const targetTask = room.tasks.find(t => t.id === taskId);
+    if (targetTask) {
+      if (targetTask.status === 'completed') {
+        room.votesRevealed = true;
+      } else {
+        if (targetTask.status === 'pending') {
+          targetTask.status = 'voting';
+        }
+        room.votesRevealed = false;
       }
-    });
+    }
 
     broadcastRoomUpdate(roomId);
   });
@@ -215,6 +220,9 @@ io.on('connection', (socket) => {
   socket.on('cast-vote', ({ roomId, taskId, vote }) => {
     const room = rooms.get(roomId);
     if (!room) return;
+
+    const task = room.tasks.find(x => x.id === taskId);
+    if (task && task.status === 'completed') return;
 
     if (!room.votes[taskId]) {
       room.votes[taskId] = {};
@@ -228,6 +236,9 @@ io.on('connection', (socket) => {
   socket.on('clear-vote', ({ roomId, taskId }) => {
     const room = rooms.get(roomId);
     if (!room) return;
+
+    const task = room.tasks.find(x => x.id === taskId);
+    if (task && task.status === 'completed') return;
 
     if (room.votes[taskId] && room.votes[taskId][socket.id] !== undefined) {
       delete room.votes[taskId][socket.id];
@@ -261,6 +272,7 @@ io.on('connection', (socket) => {
     if (t) {
       t.status = 'voting';
       t.finalScore = null;
+      t.completedVotes = null;
     }
 
     broadcastRoomUpdate(roomId);
@@ -273,7 +285,28 @@ io.on('connection', (socket) => {
     const t = room.tasks.find(x => x.id === taskId);
     if (t) {
       t.finalScore = score;
-      t.status = 'completed';
+
+      if (t.status !== 'completed' || !t.completedVotes) {
+        t.status = 'completed';
+
+        const taskVotes = room.votes[taskId] || {};
+        const completedVotes = [];
+
+        for (const sId in taskVotes) {
+          const voteVal = taskVotes[sId];
+          const userObj = room.users[sId];
+          const userName = userObj ? userObj.name : (socket.id === sId ? socket.userName : 'Usuário');
+          completedVotes.push({
+            id: sId,
+            name: userName,
+            vote: voteVal
+          });
+        }
+
+        t.completedVotes = completedVotes;
+      }
+
+      room.votesRevealed = true;
     }
 
     broadcastRoomUpdate(roomId);
@@ -304,8 +337,11 @@ function sanitizeRoom(room, targetSocketId = null) {
   
   for (const taskId in room.votes) {
     sanitizedVotes[taskId] = {};
+    const task = room.tasks.find(t => t.id === taskId);
+    const isCompleted = task && task.status === 'completed';
+
     for (const socketId in room.votes[taskId]) {
-      if (room.votesRevealed || socketId === targetSocketId) {
+      if (room.votesRevealed || isCompleted || socketId === targetSocketId) {
         sanitizedVotes[taskId][socketId] = room.votes[taskId][socketId];
       } else {
         // Only indicate that the user has voted (true), hide value

@@ -281,7 +281,7 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
                                 )}
                                 {task.status === 'completed' && (
                                   <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider rounded-md flex items-center gap-1">
-                                    <CheckCircle2 className="w-3 h-3" /> Concluída ({task.finalScore})
+                                    <CheckCircle2 className="w-3 h-3" /> Votada ({task.finalScore})
                                   </span>
                                 )}
                               </div>
@@ -303,7 +303,7 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
                                   <span className="hidden xs:inline">Votar</span>
                                 </button>
                               ) : (
-                                <span className="text-[11px] text-amber-600 dark:text-indigo-400 font-medium px-2 py-1 bg-amber-500/10 dark:bg-indigo-500/10 rounded-lg">
+                                <span className="text-[11px] text-amber-600 dark:text-indigo-500 font-medium px-2 py-1 bg-amber-500/10 dark:bg-indigo-500/10 rounded-lg">
                                   Ativa
                                 </span>
                               )}

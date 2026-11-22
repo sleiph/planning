@@ -16,23 +16,25 @@ import {
 export default function VotingArea({ room, roomId, currentUserId, onOpenSettings }) {
   const currentTaskId = room.currentTaskId;
   const currentTask = room.tasks?.find((t) => t.id === currentTaskId);
+  const isTaskCompleted = currentTask?.status === 'completed';
   const currentVotes = (currentTaskId && room.votes && room.votes[currentTaskId]) || {};
-  const votesRevealed = room.votesRevealed;
+  const votesRevealed = room.votesRevealed || isTaskCompleted;
   const isOrganizer = room.users && room.users[currentUserId]?.isOrganizer;
 
   const myVote = currentVotes[currentUserId];
 
   const handleCastVote = (voteValue) => {
-    if (!currentTaskId) return;
+    if (!currentTaskId || isTaskCompleted) return;
     socket.emit('cast-vote', { roomId, taskId: currentTaskId, vote: voteValue });
   };
 
   const handleClearMyVote = () => {
-    if (!currentTaskId) return;
+    if (!currentTaskId || isTaskCompleted) return;
     socket.emit('clear-vote', { roomId, taskId: currentTaskId });
   };
 
   const handleToggleReveal = () => {
+    if (isTaskCompleted) return;
     socket.emit('reveal-votes', { roomId, revealed: !votesRevealed });
   };
 
@@ -67,16 +69,25 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
   // Calculate stats when votes are revealed
   const calculateStats = () => {
     if (!votesRevealed) return null;
-    const values = Object.values(currentVotes).filter(
-      (v) => (typeof v === 'string' || typeof v === 'number') && !isNaN(v) && v !== '?' && v !== '☕'
-    );
+    let values = [];
+    if (isTaskCompleted && currentTask.completedVotes) {
+      values = currentTask.completedVotes
+        .map((v) => v.vote)
+        .filter((v) => (typeof v === 'string' || typeof v === 'number') && !isNaN(v) && v !== '?' && v !== '☕');
+    } else {
+      values = Object.values(currentVotes).filter(
+        (v) => (typeof v === 'string' || typeof v === 'number') && !isNaN(v) && v !== '?' && v !== '☕'
+      );
+    }
     if (values.length === 0) return null;
     const sum = values.reduce((acc, val) => acc + Number(val), 0);
     return Math.round(sum / values.length);
   };
 
   const averageScore = calculateStats();
-  const usersList = room.users ? Object.values(room.users) : [];
+  const usersList = isTaskCompleted && currentTask.completedVotes
+    ? currentTask.completedVotes
+    : (room.users ? Object.values(room.users) : []);
 
   if (!currentTask) {
     return (
@@ -110,17 +121,18 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
         {/* status da tarefa atual */}
         <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-2.5 py-1 bg-amber-500/20 text-amber-700 dark:text-indigo-400 border border-amber-500/30 dark:border-indigo-500/30 text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-lg">
-              Em Votação
-            </span>
+            {isTaskCompleted ? (
+              <span className="px-2.5 py-1 bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-lg flex items-center gap-1">
+                <CheckCircle2 className="w-3.5 h-3.5" /> Votada (Pontuação: {currentTask.finalScore})
+              </span>
+            ) : (
+              <span className="px-2.5 py-1 bg-amber-500/20 text-amber-700 dark:text-indigo-400 border border-amber-500/30 dark:border-indigo-500/30 text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-lg">
+                Em Votação
+              </span>
+            )}
             {room.tasks && room.tasks.length > 0 && (
               <span className="text-xs text-theme-muted">
                 Tarefa {currentIndex + 1} de {room.tasks.length}
-              </span>
-            )}
-            {currentTask.status === 'completed' && (
-              <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider rounded-md flex items-center gap-1">
-                <CheckCircle2 className="w-3 h-3" /> Pontuação: {currentTask.finalScore}
               </span>
             )}
           </div>
@@ -182,36 +194,38 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
           {/* revelar / esconder */}
           {isOrganizer && (
             <div className="flex items-center gap-2">
-              {votesRevealed && (
+              {(votesRevealed || isTaskCompleted) && (
                 <button
                   onClick={handleResetVotes}
-                  className="px-3 py-1.5 rounded-xl font-medium text-xs flex items-center gap-1.5 bg-rose-500/10 dark:bg-rose-600/20 text-white-600 dark:text-white-300 hover:text-rose-600 border border-rose-500/30 hover:bg-rose-500/20 transition-all cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl font-medium text-xs flex items-center gap-1.5 bg-rose-500/10 dark:bg-rose-600/20 text-rose-600 dark:text-rose-400 hover:text-rose-600 border border-rose-500/30 hover:bg-rose-500/20 transition-all cursor-pointer"
                   title="Limpar todos os votos e revotar esta tarefa"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   <span>Limpar Votos</span>
                 </button>
               )}
-              <button
-                onClick={handleToggleReveal}
-                className={`px-3 py-1.5 rounded-xl font-medium text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
-                  votesRevealed
-                    ? 'bg-amber-500/10 dark:bg-amber-600/20 text-amber-700 dark:text-white-300 border border-amber-500/30 hover:bg-amber-500/20'
-                    : 'bg-amber-600 hover:bg-amber-500 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white shadow-md shadow-amber-600/20 dark:shadow-indigo-600/20'
-                }`}
-              >
-                {votesRevealed ? (
-                  <>
-                    <EyeOff className="w-3.5 h-3.5" />
-                    <span>Ocultar Notas</span>
-                  </>
-                ) : (
-                  <>
-                    <Eye className="w-3.5 h-3.5" />
-                    <span>Revelar Notas</span>
-                  </>
-                )}
-              </button>
+              {!isTaskCompleted && (
+                <button
+                  onClick={handleToggleReveal}
+                  className={`px-3 py-1.5 rounded-xl font-medium text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+                    votesRevealed
+                      ? 'bg-amber-500/10 dark:bg-amber-600/20 text-amber-700 dark:text-white-300 border border-amber-500/30 hover:bg-amber-500/20'
+                      : 'bg-amber-600 hover:bg-amber-500 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white shadow-md shadow-amber-600/20 dark:shadow-indigo-600/20'
+                  }`}
+                >
+                  {votesRevealed ? (
+                    <>
+                      <EyeOff className="w-3.5 h-3.5" />
+                      <span>Ocultar Notas</span>
+                    </>
+                  ) : (
+                    <>
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Revelar Notas</span>
+                    </>
+                  )}
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -219,8 +233,8 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
         {/* grid de cartas dos jogadores */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 sm:gap-4">
           {usersList.map((u) => {
-            const hasVoted = currentVotes[u.id] !== undefined;
-            const voteVal = currentVotes[u.id];
+            const hasVoted = isTaskCompleted ? true : currentVotes[u.id] !== undefined;
+            const voteVal = isTaskCompleted ? u.vote : currentVotes[u.id];
             const isMe = u.id === currentUserId;
 
             return (
@@ -304,7 +318,7 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
                 <div className="mt-3.5 flex items-center justify-center gap-2.5 flex-wrap">
                   <button
                     onClick={handleResetVotes}
-                    className="inline-flex items-center gap-1.5 text-xs text-white-600 dark:text-white-400 hover:text-rose-600 font-medium cursor-pointer px-3 py-1.5 bg-rose-500/10 dark:bg-rose-950/40 border border-rose-500/30 rounded-xl transition-colors"
+                    className="inline-flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-500 hover:text-rose-700 font-medium cursor-pointer px-3 py-1.5 bg-rose-500/10 dark:bg-rose-950/40 border border-rose-500/30 rounded-xl transition-colors"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                     <span>Limpar votos e revotar</span>
@@ -332,7 +346,7 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
           <h3 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-theme-muted">
             Esforço da Tarefa
           </h3>
-          {myVote !== undefined && (
+          {!isTaskCompleted && myVote !== undefined && (
             <button
               onClick={handleClearMyVote}
               className="text-xs text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 flex items-center gap-1 cursor-pointer"
@@ -343,27 +357,32 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
           )}
         </div>
 
-        <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
-          {room.cardDeck &&
-            room.cardDeck.map((card, idx) => {
-              const isSelected = myVote !== undefined && myVote !== true && String(myVote) === String(card);
+        {isTaskCompleted ? (
+          <div className="text-center py-4 bg-theme-item rounded-xl border border-theme-border text-xs sm:text-sm text-theme-muted">
+            Votação travada. Pontuação final definida: <strong className="text-emerald-600 dark:text-emerald-400 font-mono text-base ml-1">{currentTask.finalScore}</strong>
+          </div>
+        ) : (
+          <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
+            {room.cardDeck &&
+              room.cardDeck.map((card, idx) => {
+                const isSelected = myVote !== undefined && myVote !== true && String(myVote) === String(card);
 
-              return (
-                <button
-                  key={idx}
-                  onClick={() => handleCastVote(card)}
-                  className={`w-12 h-16 xs:w-14 xs:h-20 sm:w-16 sm:h-24 rounded-xl sm:rounded-2xl font-mono text-lg xs:text-xl sm:text-2xl font-bold flex items-center justify-center transition-all cursor-pointer shadow-md relative ${
-                    isSelected
-                      ? 'bg-amber-600 dark:bg-indigo-600 text-white -translate-y-2.5 border-2 shadow-xl shadow-amber-500/40 dark:shadow-indigo-500/40 scale-105'
-                      : 'bg-theme-item hover:bg-theme-elevated text-theme-main border border-theme-border-subtle hover:border-amber-500/50 dark:hover:border-indigo-500/50 hover:-translate-y-1'
-                  }`}
-                >
-                  
-                  <span>{card}</span>
-                </button>
-              );
-            })}
-        </div>
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => handleCastVote(card)}
+                    className={`w-12 h-16 xs:w-14 xs:h-20 sm:w-16 sm:h-24 rounded-xl sm:rounded-2xl font-mono text-lg xs:text-xl sm:text-2xl font-bold flex items-center justify-center transition-all cursor-pointer shadow-md relative ${
+                      isSelected
+                        ? 'bg-amber-600 dark:bg-indigo-600 text-white -translate-y-2.5 border-2 shadow-xl shadow-amber-500/40 dark:shadow-indigo-500/40 scale-105'
+                        : 'bg-theme-item hover:bg-theme-elevated text-theme-main border border-theme-border-subtle hover:border-amber-500/50 dark:hover:border-indigo-500/50 hover:-translate-y-1'
+                    }`}
+                  >
+                    <span>{card}</span>
+                  </button>
+                );
+              })}
+          </div>
+        )}
       </div>
 
     </div>

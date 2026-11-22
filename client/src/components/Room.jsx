@@ -108,7 +108,7 @@ export default function Room({ roomId, userName, isOrganizer, onLeave }) {
 
             <p className="text-[11px] sm:text-xs text-theme-muted flex items-center gap-1 truncate">
               <span>Sala:</span>
-              <code className="text-amber-600 dark:text-indigo-400 font-mono font-medium">{room.id}</code>
+              <code className="text-amber-600 dark:text-indigo-500 font-mono font-medium">{room.id}</code>
             </p>
           </div>
         </div>

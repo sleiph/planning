@@ -4,9 +4,21 @@ import { Crown, CheckCircle2, Clock, Users } from 'lucide-react';
 export default function ParticipantList({ room, currentUserId }) {
   const users = room.users ? Object.values(room.users) : [];
   const currentTaskId = room.currentTaskId;
+  const currentTask = room.tasks?.find((t) => t.id === currentTaskId);
+  const isTaskCompleted = currentTask?.status === 'completed';
   const currentVotes = (currentTaskId && room.votes && room.votes[currentTaskId]) || {};
-  const votesRevealed = room.votesRevealed;
-  const votedCount = users.filter((u) => currentVotes[u.id] !== undefined).length;
+  const votesRevealed = room.votesRevealed || isTaskCompleted;
+
+  const completedVotesMap = {};
+  if (isTaskCompleted && currentTask.completedVotes) {
+    currentTask.completedVotes.forEach((cv) => {
+      completedVotesMap[cv.id] = cv.vote;
+    });
+  }
+
+  const votedCount = isTaskCompleted
+    ? (currentTask.completedVotes ? currentTask.completedVotes.length : 0)
+    : users.filter((u) => currentVotes[u.id] !== undefined).length;
 
   return (
     <div className="bg-theme-card border border-theme-border rounded-2xl p-4 shadow-lg flex flex-col h-full">
@@ -17,15 +29,19 @@ export default function ParticipantList({ room, currentUserId }) {
         </h3>
         {currentTaskId && (
           <span className="text-[11px] font-medium text-theme-muted">
-            {votedCount}/{users.length} votaram
+            {isTaskCompleted ? `${votedCount} votaram` : `${votedCount}/${users.length} votaram`}
           </span>
         )}
       </div>
 
       <div className="space-y-2 overflow-y-auto flex-1 pr-0.5 max-h-72 lg:max-h-none">
         {users.map((u) => {
-          const hasVoted = currentVotes[u.id] !== undefined;
-          const voteValue = currentVotes[u.id];
+          const hasVoted = isTaskCompleted
+            ? completedVotesMap[u.id] !== undefined
+            : currentVotes[u.id] !== undefined;
+          const voteValue = isTaskCompleted
+            ? completedVotesMap[u.id]
+            : currentVotes[u.id];
           const isMe = u.id === currentUserId;
 
           return (

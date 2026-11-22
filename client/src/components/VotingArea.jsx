@@ -110,7 +110,7 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
         {/* status da tarefa atual */}
         <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-2.5 py-1 bg-amber-500/20 text-amber-700 dark:text-indigo-300 border border-amber-500/30 dark:border-indigo-500/30 text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-lg">
+            <span className="px-2.5 py-1 bg-amber-500/20 text-amber-700 dark:text-indigo-400 border border-amber-500/30 dark:border-indigo-500/30 text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-lg">
               Em Votação
             </span>
             {room.tasks && room.tasks.length > 0 && (
@@ -185,7 +185,7 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
               {votesRevealed && (
                 <button
                   onClick={handleResetVotes}
-                  className="px-3 py-1.5 rounded-xl font-medium text-xs flex items-center gap-1.5 bg-rose-500/10 dark:bg-rose-600/20 text-rose-600 dark:text-rose-300 border border-rose-500/30 hover:bg-rose-500/20 transition-all cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl font-medium text-xs flex items-center gap-1.5 bg-rose-500/10 dark:bg-rose-600/20 text-white-600 dark:text-white-300 hover:text-rose-600 border border-rose-500/30 hover:bg-rose-500/20 transition-all cursor-pointer"
                   title="Limpar todos os votos e revotar esta tarefa"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -196,7 +196,7 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
                 onClick={handleToggleReveal}
                 className={`px-3 py-1.5 rounded-xl font-medium text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
                   votesRevealed
-                    ? 'bg-amber-500/10 dark:bg-amber-600/20 text-amber-700 dark:text-amber-300 border border-amber-500/30 hover:bg-amber-500/20'
+                    ? 'bg-amber-500/10 dark:bg-amber-600/20 text-amber-700 dark:text-white-300 border border-amber-500/30 hover:bg-amber-500/20'
                     : 'bg-amber-600 hover:bg-amber-500 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white shadow-md shadow-amber-600/20 dark:shadow-indigo-600/20'
                 }`}
               >
@@ -278,7 +278,7 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
             {/* Seletor de score final do organizador */}
             {isOrganizer && (
               <div className="bg-[var(--indigo-subtle-bg)] border border-[var(--indigo-subtle-border)] rounded-xl p-3 sm:p-4 text-center">
-                <div className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-indigo-300 mb-2.5">
+                <div className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-indigo-400 mb-2.5">
                   Definir Pontuação Final da Tarefa
                 </div>
                 <div className="flex flex-wrap items-center justify-center gap-2">
@@ -304,7 +304,7 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
                 <div className="mt-3.5 flex items-center justify-center gap-2.5 flex-wrap">
                   <button
                     onClick={handleResetVotes}
-                    className="inline-flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400 hover:text-rose-500 font-medium cursor-pointer px-3 py-1.5 bg-rose-500/10 dark:bg-rose-950/40 border border-rose-500/30 rounded-xl transition-colors"
+                    className="inline-flex items-center gap-1.5 text-xs text-white-600 dark:text-white-400 hover:text-rose-600 font-medium cursor-pointer px-3 py-1.5 bg-rose-500/10 dark:bg-rose-950/40 border border-rose-500/30 rounded-xl transition-colors"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                     <span>Limpar votos e revotar</span>
@@ -313,7 +313,7 @@ export default function VotingArea({ room, roomId, currentUserId, onOpenSettings
                   {currentIndex < room.tasks.length - 1 && (
                     <button
                       onClick={handleNextTask}
-                      className="inline-flex items-center gap-1.5 text-xs text-amber-600 dark:text-indigo-400 hover:text-amber-500 dark:hover:text-indigo-500 font-medium cursor-pointer px-3 py-1.5 bg-theme-elevated hover:bg-theme-elevated-hover border border-theme-border-subtle rounded-xl transition-colors"
+                      className="inline-flex items-center gap-1.5 text-xs text-amber-600 dark:text-indigo-500 hover:text-amber-600 dark:hover:text-indigo-500 font-medium cursor-pointer px-3 py-1.5 bg-theme-elevated hover:bg-theme-elevated-hover border border-theme-border-subtle rounded-xl transition-colors"
                     >
                       <span>Ir para próxima tarefa</span>
                       <ArrowRight className="w-3.5 h-3.5" />

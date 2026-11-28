@@ -184,6 +184,7 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
                       placeholder="Título da Tarefa (ex: Autenticação OAuth)"
                       value={taskTitle}
                       onChange={(e) => setTaskTitle(e.target.value)}
+                      maxLength={90}
                       className="w-full bg-theme-input border border-theme-input-border rounded-xl px-3.5 py-2.5 text-theme-main placeholder-theme-faint focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500 text-sm"
                     />
                     <input
@@ -191,6 +192,7 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
                       placeholder="Descrição ou critérios de aceite (opcional)"
                       value={taskDesc}
                       onChange={(e) => setTaskDesc(e.target.value)}
+                      maxLength={300}
                       className="w-full bg-theme-input border border-theme-input-border rounded-xl px-3.5 py-2 text-theme-main placeholder-theme-faint focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500 text-sm"
                     />
                   </div>
@@ -243,12 +245,14 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
                               type="text"
                               value={editTitle}
                               onChange={(e) => setEditTitle(e.target.value)}
+                              maxLength={90}
                               className="w-full bg-theme-input border border-theme-input-border rounded-xl px-3 py-2 text-theme-main text-sm focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500"
                             />
                             <input
                               type="text"
                               value={editDesc}
                               onChange={(e) => setEditDesc(e.target.value)}
+                              maxLength={300}
                               placeholder="Descrição (opcional)"
                               className="w-full bg-theme-input border border-theme-input-border rounded-xl px-3 py-2 text-theme-main text-sm focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500"
                             />
@@ -359,6 +363,7 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
                     type="text"
                     value={roomName}
                     onChange={(e) => setRoomName(e.target.value)}
+                    maxLength={40}
                     className="flex-1 bg-theme-input border border-theme-input-border rounded-xl px-3.5 py-2 text-theme-main focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500 text-sm"
                     placeholder="Ex: Sprint 15 Planning"
                   />
@@ -412,6 +417,7 @@ export default function OrganizerModal({ isOpen, onClose, room, roomId }) {
                     type="text"
                     value={newCardValue}
                     onChange={(e) => setNewCardValue(e.target.value)}
+                    maxLength={8}
                     placeholder="Nova carta (ex: 8, 13, XS, XL)"
                     className="flex-1 bg-theme-input border border-theme-input-border rounded-xl px-3.5 py-2 text-theme-main focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500 text-sm"
                   />

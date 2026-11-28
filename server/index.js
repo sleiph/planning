@@ -44,8 +44,8 @@ app.post('/api/rooms', (req, res) => {
   
   const newRoom = {
     id: roomId,
-    name: roomName || 'Planning Poker Room',
-    organizerName: organizerName || 'Organizer',
+    name: roomName ? roomName.trim().substring(0, 40) : 'Planning Poker',
+    organizerName: organizerName ? organizerName.trim().substring(0, 30) : 'Organizador',
     organizerToken: organizerToken || null,
     cardDeck: [...DEFAULT_DECK],
     tasks: [],
@@ -59,7 +59,7 @@ app.post('/api/rooms', (req, res) => {
   res.json(newRoom);
 });
 
-// Get room details endpoint
+// Get detalhes da sala
 app.get('/api/rooms/:roomId', (req, res) => {
   const { roomId } = req.params;
   const room = rooms.get(roomId);
@@ -69,7 +69,7 @@ app.get('/api/rooms/:roomId', (req, res) => {
   res.json(room);
 });
 
-// Serve static frontend in production
+// Serve o frontend estatico em produção
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/dist')));
   app.get('*', (req, res) => {
@@ -80,14 +80,16 @@ if (process.env.NODE_ENV === 'production') {
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
 
-  // Join Room
+  // Entrar na sala
   socket.on('join-room', ({ roomId, userName, isOrganizer, organizerToken }) => {
+    const safeUserName = userName ? userName.trim().substring(0, 30) : 'Usuário';
+
     let room = rooms.get(roomId);
     if (!room) {
       room = {
         id: roomId,
         name: 'Planning Poker Room',
-        organizerName: userName,
+        organizerName: safeUserName,
         organizerToken: organizerToken || null,
         cardDeck: [...DEFAULT_DECK],
         tasks: [],
@@ -101,7 +103,7 @@ io.on('connection', (socket) => {
 
     socket.join(roomId);
     socket.roomId = roomId;
-    socket.userName = userName;
+    socket.userName = safeUserName;
 
     let userIsOrganizer = false;
     if (organizerToken && room.organizerToken && room.organizerToken === organizerToken) {
@@ -117,44 +119,47 @@ io.on('connection', (socket) => {
 
     room.users[socket.id] = {
       id: socket.id,
-      name: userName,
+      name: safeUserName,
       isOrganizer: userIsOrganizer
     };
 
     if (userIsOrganizer) {
-      room.organizerName = userName;
+      room.organizerName = safeUserName;
     }
 
     broadcastRoomUpdate(roomId);
   });
 
-  // Update Room Settings (Card deck, room name)
+  // Update Opções da sala (deck, nome da sala)
   socket.on('update-settings', ({ roomId, cardDeck, roomName }) => {
     const room = rooms.get(roomId);
     if (!room) return;
 
-    if (cardDeck) room.cardDeck = cardDeck;
-    if (roomName) room.name = roomName;
+    if (cardDeck && Array.isArray(cardDeck)) {
+      room.cardDeck = cardDeck.map(c => String(c).trim().substring(0, 8));
+    }
+    if (roomName) room.name = String(roomName).trim().substring(0, 40);
 
     broadcastRoomUpdate(roomId);
   });
 
-  // Task Management
+  // gestao de Tarefas
   socket.on('add-task', ({ roomId, task }) => {
     const room = rooms.get(roomId);
-    if (!room) return;
+    if (!room)
+      return;
 
     const newTask = {
       id: uuidv4().substring(0, 6),
-      title: task.title,
-      description: task.description || '',
+      title: String(task.title || '').trim().substring(0, 90),
+      description: String(task.description || '').trim().substring(0, 300),
       status: 'pending', // pending, voting, completed
       finalScore: null
     };
 
     room.tasks.push(newTask);
     
-    // If this is the first task, set it as current
+    // Se eh a primeira, define como ativa
     if (!room.currentTaskId && room.tasks.length === 1) {
       room.currentTaskId = newTask.id;
       newTask.status = 'voting';
@@ -169,10 +174,14 @@ io.on('connection', (socket) => {
 
     const t = room.tasks.find(x => x.id === taskId);
     if (t) {
-      if (task.title !== undefined) t.title = task.title;
-      if (task.description !== undefined) t.description = task.description;
-      if (task.status !== undefined) t.status = task.status;
-      if (task.finalScore !== undefined) t.finalScore = task.finalScore;
+      if (task.title !== undefined)
+        t.title = String(task.title).trim().substring(0, 90);
+      if (task.description !== undefined)
+        t.description = String(task.description).trim().substring(0, 300);
+      if (task.status !== undefined)
+        t.status = task.status;
+      if (task.finalScore !== undefined)
+        t.finalScore = task.finalScore;
     }
 
     broadcastRoomUpdate(roomId);
@@ -187,7 +196,7 @@ io.on('connection', (socket) => {
       room.currentTaskId = room.tasks.length > 0 ? room.tasks[0].id : null;
       room.votesRevealed = false;
     }
-    // Clean votes for deleted task
+    // Limpa votos pra tarefas deletadas
     if (room.votes[taskId]) {
       delete room.votes[taskId];
     }

@@ -118,9 +118,10 @@ export default function Landing({ onRoomCreated, onRoomJoined }) {
               </label>
               <input
                 type="text"
-                placeholder="Ex: Sprint 14 Planning"
+                placeholder="Ex: 30/11 a 11/12"
                 value={roomName}
                 onChange={(e) => setRoomName(e.target.value)}
+                maxLength={40}
                 className="w-full bg-theme-input border border-theme-input-border rounded-xl px-4 py-3 text-theme-main placeholder-theme-faint focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500 transition-colors"
                 autoFocus
               />
@@ -135,6 +136,7 @@ export default function Landing({ onRoomCreated, onRoomJoined }) {
                 placeholder="Ex: Carlos"
                 value={organizerName}
                 onChange={(e) => setOrganizerName(e.target.value)}
+                maxLength={30}
                 className="w-full bg-theme-input border border-theme-input-border rounded-xl px-4 py-3 text-theme-main placeholder-theme-faint focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500 transition-colors"
               />
             </div>
@@ -169,6 +171,7 @@ export default function Landing({ onRoomCreated, onRoomJoined }) {
                 placeholder="Ex: a1b2c3d4"
                 value={roomId}
                 onChange={(e) => setRoomId(e.target.value)}
+                maxLength={30}
                 className="w-full bg-theme-input border border-theme-input-border rounded-xl px-4 py-3 text-theme-main placeholder-theme-faint focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500 transition-colors uppercase font-mono"
                 autoFocus
               />
@@ -183,6 +186,7 @@ export default function Landing({ onRoomCreated, onRoomJoined }) {
                 placeholder="Ex: Ana (Desenvolvedora)"
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
+                maxLength={30}
                 className="w-full bg-theme-input border border-theme-input-border rounded-xl px-4 py-3 text-theme-main placeholder-theme-faint focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500 transition-colors"
               />
             </div>

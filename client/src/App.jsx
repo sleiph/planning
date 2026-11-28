@@ -83,6 +83,7 @@ export default function App() {
               placeholder="Seu Nome"
               value={inputName}
               onChange={(e) => setInputName(e.target.value)}
+              maxLength={30}
               className="w-full bg-theme-input border border-theme-input-border rounded-xl px-4 py-3 text-theme-main placeholder-theme-faint focus:outline-none focus:border-amber-500 dark:focus:border-indigo-500"
               autoFocus
             />
